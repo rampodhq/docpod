@@ -1,0 +1,48 @@
+.navbar {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  padding: 18px 48px;
+  background: #ffffff;
+  border-bottom: 1px solid #f1d9d1;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.04);
+}
+
+.brandText {
+  font-weight: 700;
+  font-size: 1.8rem;
+  letter-spacing: -0.5px;
+  color: #2b2b2b;
+}
+
+.brandAccent {
+  color: #f38a73;
+}
+
+.links {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.link {
+  text-decoration: none;
+  color: #6d605b;
+  font-weight: 600;
+  font-size: 0.95rem;
+  padding-bottom: 6px;
+  border-bottom: 2px solid transparent;
+  transition: color 0.2s ease, border-color 0.2s ease;
+}
+
+.link:hover {
+  color: #f38a73;
+}
+
+.linkActive {
+  color: #f38a73;
+  border-bottom-color: #f38a73;
+}

@@ -1,0 +1,254 @@
+.page {
+  min-height: 100vh;
+  background: #fdebe4;
+  padding: 32px 48px 40px;
+  color: #2b2b2b;
+  font-family: 'Poppins', sans-serif;
+}
+
+.pageHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+
+.pageTitle {
+  font-size: 1.1rem;
+  color: #7b6e69;
+  font-weight: 600;
+}
+
+.pageSubtitle {
+  font-size: 2rem;
+  font-weight: 600;
+  margin-top: 6px;
+}
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 18px;
+}
+
+.sectionTitle {
+  font-size: 1.4rem;
+  font-weight: 600;
+}
+
+.searchBar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #fff;
+  border-radius: 999px;
+  padding: 10px 16px;
+  border: 1px solid #f1d9d1;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.05);
+  min-width: 280px;
+}
+
+.searchIcon {
+  color: #f38a73;
+}
+
+.searchInput {
+  border: none;
+  outline: none;
+  background: transparent;
+  font-size: 0.95rem;
+  width: 100%;
+  color: #514844;
+}
+
+.cardPanel {
+  background: #fff;
+  border-radius: 20px;
+  border: 1px solid #f1d9d1;
+  box-shadow: 0 16px 30px rgba(0, 0, 0, 0.08);
+  padding: 20px 24px 16px;
+}
+
+.panelHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.panelTabs {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.panelTabActive {
+  font-weight: 600;
+  color: #514844;
+}
+
+.panelTabCount {
+  font-size: 0.85rem;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: #fbe7e0;
+  color: #f38a73;
+  font-weight: 600;
+}
+
+.actionsButton,
+.actionsButtonSmall {
+  border: 1px solid #f1d9d1;
+  background: #fff;
+  padding: 10px 16px;
+  border-radius: 12px;
+  color: #6d605b;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.actionsButtonSmall {
+  padding: 8px 14px;
+  font-size: 0.85rem;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.card {
+  background: #fff;
+  border-radius: 16px;
+  border: 1px solid #f1d9d1;
+  padding: 14px 16px;
+  box-shadow: 0 8px 14px rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  min-height: 120px;
+}
+
+.cardHeader {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.cardIcon {
+  width: 32px;
+  height: 32px;
+  border-radius: 10px;
+  background: #fde0d4;
+  flex-shrink: 0;
+}
+
+.peach {
+  background: #fddfd6;
+}
+
+.blue {
+  background: #d8eaf1;
+}
+
+.sage {
+  background: #e2e6d6;
+}
+
+.cardTitle {
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.cardSubtitle {
+  font-size: 0.85rem;
+  color: #8a7f7b;
+  margin-top: 4px;
+}
+
+.cardMenu {
+  margin-left: auto;
+  border: none;
+  background: transparent;
+  font-size: 1.1rem;
+  color: #b7a8a2;
+  cursor: pointer;
+}
+
+.cardTag {
+  align-self: flex-start;
+  font-size: 0.75rem;
+  padding: 4px 10px;
+  background: #fbe7e0;
+  border-radius: 999px;
+  color: #6d605b;
+  font-weight: 600;
+}
+
+.createCard {
+  border: 1px dashed #f1c4b6;
+  border-radius: 16px;
+  padding: 18px;
+  text-align: center;
+  text-decoration: none;
+  color: inherit;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
+  justify-content: center;
+  background: #fff6f3;
+  min-height: 160px;
+}
+
+.createIcon {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 2px solid #f38a73;
+  color: #f38a73;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+}
+
+.createTitle {
+  font-weight: 600;
+}
+
+.createSubtitle {
+  font-size: 0.85rem;
+  color: #8a7f7b;
+}
+
+.panelFooter {
+  margin-top: 18px;
+  text-align: center;
+  color: #8a7f7b;
+  font-size: 0.85rem;
+}
+
+@media (max-width: 1100px) {
+  .grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 760px) {
+  .page {
+    padding: 24px;
+  }
+
+  .toolbar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}
