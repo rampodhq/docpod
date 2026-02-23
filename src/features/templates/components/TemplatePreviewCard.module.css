@@ -1,0 +1,42 @@
+.card {
+  background: var(--bg-white);
+  border-radius: 16px;
+  padding: 24px;
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.08);
+}
+
+.card:hover {
+  transform: translateY(-2px);
+}
+
+.icon {
+  width: 64px;
+  height: 64px;
+  background: var(--ui-neutral-bg);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--primary-color);
+}
+
+.iconSvg {
+  width: 30px;
+  height: 30px;
+}
+
+.title {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.description {
+  font-size: 14px;
+  color: var(--text-secondary);
+}

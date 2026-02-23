@@ -1,15 +1,21 @@
 .page {
-  background: #fdebe4;
+  background: linear-gradient(
+    180deg,
+    var(--bg-gradient-start) 0%,
+    var(--bg-gradient-mid) 60%,
+    var(--bg-gradient-end) 100%
+  );
   min-height: 100vh;
 }
 
 .main {
   max-width: 980px;
   margin: 0 auto;
-  padding: 2.4rem 1.5rem 3.5rem;
+  padding: 2rem 1.5rem 2rem;
   display: flex;
   flex-direction: column;
   gap: 2rem;
+  min-height: calc(100vh - 200px);
 }
 
 .header {
@@ -19,18 +25,31 @@
   gap: 1.5rem;
 }
 
+.titleBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
 .title {
   margin: 0;
   font-family: 'Poppins', sans-serif;
   font-size: 2.1rem;
   font-weight: 700;
-  color: #2b2b2b;
+  color: var(--text-primary);
+}
+
+.subtitle {
+  margin: 0;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.95rem;
+  color: var(--text-muted);
 }
 
 .resetButton {
   border: 1px solid #f2c9bf;
-  background: #fff7f4;
-  color: #e27b70;
+  background: var(--primary-lighter);
+  color: var(--accent-warning);
   padding: 0.6rem 1.2rem;
   border-radius: 12px;
   font-family: 'Inter', sans-serif;
@@ -38,25 +57,69 @@
   font-size: 0.9rem;
   display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.55rem;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.06);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.resetButton:hover {
+  background: var(--accent-warning-bg);
+  border-color: var(--accent-warning);
+  transform: translateY(-1px);
+  box-shadow: 0 8px 16px rgba(226, 123, 112, 0.2);
+  color: #d65a50;
+}
+
+.resetButton:active {
+  transform: translateY(0);
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.06);
 }
 
+.resetButton svg {
+  flex-shrink: 0;
+  transition: transform 0.2s ease;
+}
+
+.resetButton:hover svg {
+  transform: scale(1.1);
+}
+
 .card {
-  background: #ffffff;
-  border: 1px solid #ead5cd;
+  background: var(--bg-white);
+  border: 1px solid var(--border-secondary);
   border-radius: 18px;
   box-shadow: 0 12px 20px rgba(0, 0, 0, 0.08);
   overflow: hidden;
+  animation: cardFadeIn 0.4s ease;
+}
+
+@keyframes cardFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .cardHeader {
   padding: 1.2rem 1.8rem;
-  border-bottom: 1px solid #f1d9d1;
+  border-bottom: 1px solid var(--border-light);
   font-family: 'Inter', sans-serif;
   font-weight: 700;
   font-size: 1rem;
-  color: #6d605b;
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.headerIcon {
+  color: var(--primary-color);
+  flex-shrink: 0;
 }
 
 .row {
@@ -65,30 +128,57 @@
   justify-content: space-between;
   gap: 1.5rem;
   padding: 1.15rem 1.8rem;
+  transition: background-color 0.2s ease;
+}
+
+.row:hover {
+  background-color: var(--bg-hover);
 }
 
 .row + .row {
-  border-top: 1px solid #f1d9d1;
+  border-top: 1px solid var(--border-light);
 }
 
 .rowLabel {
   font-family: 'Inter', sans-serif;
   font-size: 1rem;
   font-weight: 600;
-  color: #6d605b;
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.labelIcon {
+  color: var(--primary-color);
+  flex-shrink: 0;
 }
 
 .select {
   min-width: 220px;
-  padding: 0.6rem 1.1rem;
+  padding: 0.65rem 1.1rem;
   border-radius: 12px;
-  border: 1px solid #f1d9d1;
-  background: #fff7f4;
-  color: #6d605b;
+  border: 1px solid var(--border-light);
+  background: var(--primary-lighter);
+  color: var(--text-secondary);
   font-family: 'Inter', sans-serif;
   font-weight: 600;
   font-size: 0.95rem;
   box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.6);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.select:hover {
+  border-color: var(--primary-color);
+  background: var(--primary-light);
+  box-shadow: var(--shadow-primary-md);
+}
+
+.select:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: var(--shadow-primary-focus);
 }
 
 .radioGroup {
@@ -103,50 +193,230 @@
   gap: 0.5rem;
   font-family: 'Inter', sans-serif;
   font-size: 0.95rem;
-  color: #6d605b;
+  color: var(--text-secondary);
+  cursor: pointer;
+  padding: 0.4rem 0.6rem;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+  user-select: none;
+  position: relative;
+}
+
+.radioOption:hover {
+  background: var(--bg-subtle);
+  color: var(--primary-color);
+}
+
+.radioInput {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  margin: 0;
+  z-index: 1;
 }
 
 .radio {
-  width: 16px;
-  height: 16px;
+  width: 18px;
+  height: 18px;
   border-radius: 50%;
-  border: 2px solid #f3b4a6;
+  border: 2px solid var(--ui-focus-border);
   display: grid;
   place-items: center;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.radioOption:hover .radio {
+  border-color: var(--primary-color);
+  box-shadow: var(--shadow-primary-focus-lg);
+}
+
+.radioActive {
+  border-color: var(--primary-color);
+  animation: radioPulse 0.3s ease;
+}
+
+@keyframes radioPulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.15);
+  }
+  100% {
+    transform: scale(1);
+  }
 }
 
 .radioActive::after {
   content: '';
-  width: 7px;
-  height: 7px;
+  width: 8px;
+  height: 8px;
   border-radius: 50%;
-  background: #f38a73;
+  background: var(--primary-color);
+  animation: radioFadeIn 0.2s ease;
+}
+
+@keyframes radioFadeIn {
+  from {
+    transform: scale(0);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
 }
 
 .saveWrap {
   display: flex;
   justify-content: center;
   padding: 1.6rem 1.8rem 2rem;
-  border-top: 1px solid #f1d9d1;
+  border-top: 1px solid var(--border-light);
+  background: var(--bg-hover);
 }
 
 .saveButton {
-  min-width: 220px;
-  padding: 0.7rem 1.4rem;
+  min-width: 240px;
+  padding: 0.75rem 1.6rem;
   border-radius: 12px;
-  background: linear-gradient(135deg, #f38a73, #f9a68f);
+  background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
   border: none;
-  color: #fff;
+  color: var(--bg-white);
   font-family: 'Poppins', sans-serif;
   font-weight: 600;
   font-size: 1rem;
-  box-shadow: 0 10px 16px rgba(243, 138, 115, 0.35);
+  box-shadow: var(--shadow-primary);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.saveButton::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0));
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.saveButton:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-primary-hover);
+}
+
+.saveButton:hover::before {
+  opacity: 1;
+}
+
+.saveButton:active {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-primary);
+}
+
+.saveButton:disabled {
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.saveButton svg {
+  flex-shrink: 0;
+}
+
+.saveButtonLoading {
+  pointer-events: none;
+}
+
+.spinner {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.themeColorGrid {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.themeColorOption {
+  width: 56px;
+  height: 56px;
+  border-radius: 12px;
+  border: 3px solid transparent;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: grid;
+  place-items: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.themeColorOption:hover {
+  transform: translateY(-4px) scale(1.05);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+}
+
+.themeColorOption:active {
+  transform: translateY(-2px) scale(1.02);
+}
+
+.themeColorActive {
+  border-color: var(--text-primary);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+  transform: translateY(-2px);
+}
+
+.themeColorActive:hover {
+  transform: translateY(-4px) scale(1.05);
+}
+
+.themePreview {
+  padding: 1rem 1.8rem 1.5rem;
+  border-top: 1px solid var(--border-light);
+  background: var(--bg-hover);
+}
+
+.previewLabel {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-align: center;
 }
 
 @media (max-width: 900px) {
   .header {
     flex-direction: column;
     align-items: flex-start;
+  }
+
+  .titleBlock {
+    width: 100%;
+  }
+
+  .resetButton {
+    width: 100%;
+    justify-content: center;
   }
 
   .row {
@@ -160,5 +430,10 @@
 
   .radioGroup {
     flex-wrap: wrap;
+    width: 100%;
+  }
+
+  .saveButton {
+    width: 100%;
   }
 }

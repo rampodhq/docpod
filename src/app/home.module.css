@@ -1,6 +1,6 @@
 .recentMenu {
-  background: #fff;
-  border: 1px solid #e5d5cf;
+  background: var(--bg-white);
+  border: 1px solid var(--ui-input-border);
   border-radius: 12px;
   box-shadow: 0 6px 14px rgba(0, 0, 0, 0.08);
   display: flex;
@@ -15,14 +15,14 @@
   padding: 0 20px 8px 20px;
 }
 .recentMenuHeaderLabel {
-  color: #2b2b2b;
+  color: var(--text-primary);
   font-family: 'Inter', sans-serif;
   font-size: 16px;
   font-weight: 700;
 }
 .recentMenuSeparator {
   height: 1px;
-  background: #ead7d0;
+  background: var(--ui-header-bg);
   margin: 6px 0 10px;
   width: 100%;
 }
@@ -33,7 +33,7 @@
   padding: 0 20px 8px;
 }
 .recentMenuItemLabel {
-  color: #2f2f2f;
+  color: var(--text-primary);
   font-family: 'Inter', sans-serif;
   font-size: 15px;
   font-weight: 500;
@@ -49,20 +49,20 @@
 .recentMenuRowSeparator {
   height: 1px;
   width: 100%;
-  background: #ead7d0;
+  background: var(--ui-header-bg);
 }
 .templateCard {
   display: flex;
   align-items: center;
   gap: 20px;
-  background: #ffffff;
+  background: var(--bg-white);
   border-radius: 16px;
   box-shadow: 0 6px 14px rgba(0, 0, 0, 0.08);
   padding: 24px 28px;
   min-height: 148px;
   text-decoration: none;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
-  border: 1px solid #f3d9d1;
+  border: 1px solid var(--border-accent);
   cursor: pointer;
 }
 
@@ -74,10 +74,10 @@
 .templateCardImage {
   width: 56px;
   height: 56px;
-  background: #fde5dc;
+  background: var(--primary-pale);
   border-radius: 12px;
   flex-shrink: 0;
-  box-shadow: inset 0 0 0 1px #f5cfc1;
+  box-shadow: inset 0 0 0 1px var(--ui-divider);
 }
 
 .templateCardBody {
@@ -90,7 +90,7 @@
   font-family: 'Poppins', sans-serif;
   font-weight: 700;
   font-size: 1.4rem;
-  color: #2b2b2b;
+  color: var(--text-primary);
   margin: 0;
 }
 
@@ -98,19 +98,25 @@
   font-family: 'Poppins', sans-serif;
   font-weight: 500;
   font-size: 0.95rem;
-  color: #8a7f7b;
+  color: var(--text-muted);
   line-height: 1.4;
 }
 .homeBg {
-  background: #fdebe4;
+  background: linear-gradient(
+    180deg,
+    var(--bg-gradient-start) 0%,
+    var(--bg-gradient-mid) 60%,
+    var(--bg-gradient-end) 100%
+  );
   min-height: 100vh;
 }
+
 
 .header {
   display: flex;
   align-items: center;
   padding: 1.5rem 3rem;
-  background: #fff;
+  background: var(--bg-white);
 }
 
 .logo {
@@ -120,38 +126,40 @@
 }
 
 .logoAccent {
-  color: #FF8C6B;
+  color: var(--accent-info);
 }
 
 .logoPrefix {
-  color: #2b2b2b;
+  color: var(--text-primary);
 }
 
 .mainContent {
-  max-width: 1160px;
+  max-width: 1240px;
   margin: 0 auto;
-  padding: 2.5rem 0 3rem;
+  padding: 2rem 1.5rem 2rem;
   display: flex;
   gap: 2.5rem;
   align-items: flex-start;
+  min-height: calc(100vh - 200px);
 }
 
 .leftCol {
-  flex: 3;
+  flex: 1;
+  min-width: 0;
 }
 
 .heading {
   font-weight: 700;
-  font-size: 2.35rem;
-  color: #f38a73;
-  margin-bottom: 1.75rem;
+  font-size: 2.1rem;
+  color: var(--text-primary);
+  margin-bottom: 1.5rem;
   text-align: center;
 }
 
 .searchBarWrap {
   display: flex;
   justify-content: center;
-  margin-bottom: 2.2rem;
+  margin-bottom: 1.8rem;
 }
 
 .searchBar {
@@ -163,9 +171,9 @@
   width: 100%;
   padding: 0.95rem 1.4rem;
   border-radius: 999px;
-  border: 1px solid #f2d6cd;
+  border: 1px solid var(--border-lighter);
   font-size: 1rem;
-  background: #fff;
+  background: var(--bg-white);
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.06);
 }
 
@@ -174,20 +182,25 @@
   right: 18px;
   top: 50%;
   transform: translateY(-50%);
-  color: #f38a73;
-  font-size: 1.2rem;
+  color: var(--primary-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 1.75rem 2rem;
 }
 
 .sidebar {
-  flex: 1;
-  max-width: 320px;
+  width: 380px;
+  flex-shrink: 0;
+  position: sticky;
+  top: 120px;
 }
+
 
 .cardPad {
   padding: 1.5rem;
@@ -200,10 +213,75 @@
 }
 
 .sidebarList {
-  border-top: 1px solid #ddd;
+  border-top: 1px solid var(--border-light);
   padding-top: 1rem;
 }
 
 .sidebarItem {
   margin-bottom: 1rem;
+}
+
+.emptyState {
+  padding: 40px;
+  text-align: center;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.hero {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.subHeading {
+  margin-top: 0.6rem;
+  font-size: 1rem;
+  color: var(--text-muted);
+}
+
+.primaryCtaWrap {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 2rem;
+}
+
+.primaryCta {
+  background: var(--primary-color);
+  color: var(--bg-white);
+  border: none;
+  padding: 0.85rem 1.6rem;
+  border-radius: 999px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  box-shadow: var(--shadow-primary);
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.primaryCta:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-primary-hover);
+}
+
+.quickChips {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 2.2rem;
+}
+
+.quickChips button {
+  border: 1px solid var(--border-light);
+  background: var(--primary-lighter);
+  color: var(--text-secondary);
+  padding: 0.5rem 1rem;
+  border-radius: 999px;
+  font-weight: 500;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.quickChips button:hover {
+  background: var(--bg-white);
 }

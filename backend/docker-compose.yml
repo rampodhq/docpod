@@ -1,0 +1,74 @@
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      APP_ENV: local
+      DATABASE_URL: postgresql+asyncpg://postgres:postgres@host.docker.internal:5433/docpod
+      JWT_SECRET_KEY: "CHANGE_ME_IN_REAL_ENV"
+      JWT_ALGORITHM: "HS256"
+      JWT_ACCESS_TOKEN_EXPIRE_MINUTES: "60"
+      SHARED_STORAGE_PATH: /shared_storage
+    command: ["uv", "run", "uvicorn", "app.main:app", "--host=0.0.0.0", "--port=8000", "--reload"]
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./:/app
+      - docpod_shared_storage:/shared_storage
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_started
+
+  postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: docpod
+    ports:
+      - "5433:5432"
+    volumes:
+      - docpod_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d docpod"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  redis:
+    image: redis:7
+    ports:
+      - "6379:6379"
+    command: ["redis-server", "--appendonly", "yes"]
+    volumes:
+      - docpod_redisdata:/data
+
+  worker:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      APP_ENV: local
+      DATABASE_URL: postgresql+asyncpg://postgres:postgres@host.docker.internal:5433/docpod
+      JWT_SECRET_KEY: "CHANGE_ME_IN_REAL_ENV"
+      JWT_ALGORITHM: "HS256"
+      JWT_ACCESS_TOKEN_EXPIRE_MINUTES: "60"
+      CELERY_BROKER_URL: redis://host.docker.internal:6379/0
+      CELERY_RESULT_BACKEND: redis://host.docker.internal:6379/1
+      SHARED_STORAGE_PATH: /shared_storage
+    command: ["uv", "run", "celery", "-A", "app.core.celery_app:celery_app", "worker", "--loglevel=INFO", "--concurrency=2"]
+    volumes:
+      - ./:/app
+      - docpod_shared_storage:/shared_storage
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_started
+volumes:
+  docpod_pgdata:
+  docpod_redisdata:
+  docpod_shared_storage:

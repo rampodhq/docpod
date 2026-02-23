@@ -1,0 +1,312 @@
+.recentMenu {
+  background: var(--bg-white);
+  border: 1px solid var(--ui-input-border);
+  border-radius: 12px;
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.08);
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  position: sticky;
+  top: 20px;
+  max-height: calc(100vh - 60px);
+  overflow: hidden;
+}
+
+.recentMenuHeader {
+  display: flex;
+  flex-direction: column;
+  padding: 16px 20px 8px 20px;
+  flex-shrink: 0;
+}
+.recentMenuHeaderLabel {
+  color: var(--text-primary);
+  font-family: 'Inter', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+}
+.recentMenuSeparator {
+  height: 1px;
+  background: var(--ui-header-bg);
+  margin: 6px 0 10px;
+  width: 100%;
+  flex-shrink: 0;
+}
+.recentMenuSection {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  padding: 0 20px 16px;
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  min-height: 0;
+}
+
+.recentMenuSection::-webkit-scrollbar {
+  width: 6px;
+}
+
+.recentMenuSection::-webkit-scrollbar-track {
+  background: var(--bg-subtle);
+  border-radius: 10px;
+}
+
+.recentMenuSection::-webkit-scrollbar-thumb {
+  background: var(--border-light);
+  border-radius: 10px;
+  transition: background 0.2s ease;
+}
+
+.recentMenuSection::-webkit-scrollbar-thumb:hover {
+  background: var(--scrollbar-thumb-hover);
+}
+
+.recentMenuItem {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 0;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border-radius: 8px;
+  margin: 0 -8px;
+  padding: 12px 8px;
+}
+
+.recentMenuItem:hover {
+  background: var(--bg-subtle);
+  transform: translateX(2px);
+}
+
+.docIcon {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.4);
+}
+
+.docIconPeach {
+  background: var(--tone-peach);
+}
+
+.docIconSage {
+  background: var(--tone-sage);
+}
+
+.docIconSand {
+  background: var(--tone-sand);
+}
+
+.docInfo {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.docTitle {
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.docMeta {
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  color: var(--text-light);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.emptyState {
+  padding: 32px 16px;
+  text-align: center;
+  color: var(--text-light);
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+}
+.recentMenuItemLabel {
+  color: var(--text-primary);
+  font-family: 'Inter', sans-serif;
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.recentMenuItemSimple {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 12px 0;
+}
+
+.recentMenuRowSeparator {
+  height: 1px;
+  width: 100%;
+  background: var(--ui-header-bg);
+}
+.templateCard {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  background: var(--bg-white);
+  border-radius: 16px;
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.08);
+  padding: 24px 28px;
+  min-height: 148px;
+  text-decoration: none;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  border: 1px solid var(--border-accent);
+  cursor: pointer;
+}
+
+.templateCard:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 18px rgba(0, 0, 0, 0.12);
+}
+
+.templateCardImage {
+  width: 56px;
+  height: 56px;
+  background: var(--tone-peach);
+  border-radius: 12px;
+  flex-shrink: 0;
+  box-shadow: inset 0 0 0 1px var(--ui-divider);
+}
+
+.templateCardBody {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.templateCardTitle {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 700;
+  font-size: 1.4rem;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.templateCardDesc {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 500;
+  font-size: 0.95rem;
+  color: var(--text-muted);
+  line-height: 1.4;
+}
+.homeBg {
+  background: var(--bg-primary);
+  min-height: 100vh;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  padding: 1.5rem 3rem;
+  background: var(--bg-white);
+}
+
+.logo {
+  font-weight: 700;
+  font-size: 2.1rem;
+  letter-spacing: -1px;
+}
+
+.logoAccent {
+  color: var(--accent-info);
+}
+
+.logoPrefix {
+  color: var(--text-primary);
+}
+
+.mainContent {
+  max-width: 1160px;
+  margin: 0 auto;
+  padding: 2.5rem 0 3rem;
+  display: flex;
+  gap: 2.5rem;
+  align-items: flex-start;
+}
+
+.leftCol {
+  flex: 3;
+}
+
+.heading {
+  font-weight: 700;
+  font-size: 2.35rem;
+  color: var(--primary-color);
+  margin-bottom: 1.75rem;
+  text-align: center;
+}
+
+.searchBarWrap {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 2.2rem;
+}
+
+.searchBar {
+  position: relative;
+  width: 520px;
+}
+
+.input {
+  width: 100%;
+  padding: 0.95rem 1.4rem;
+  border-radius: 999px;
+  border: 1px solid var(--border-lighter);
+  font-size: 1rem;
+  background: var(--bg-white);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.06);
+}
+
+.searchIcon {
+  position: absolute;
+  right: 18px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--primary-color);
+  font-size: 1.2rem;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.75rem 2rem;
+}
+
+.sidebar {
+  flex: 1;
+  max-width: 320px;
+}
+
+.cardPad {
+  padding: 1.5rem;
+}
+
+.sidebarTitle {
+  font-weight: 700;
+  font-size: 1.1rem;
+  margin-bottom: 1rem;
+}
+
+.sidebarList {
+  border-top: 1px solid var(--border-light);
+  padding-top: 1rem;
+}
+
+.sidebarItem {
+  margin-bottom: 1rem;
+}

@@ -1,0 +1,218 @@
+.profileMenuContainer {
+  position: relative;
+}
+
+.profileButton {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 2px solid var(--border-light);
+  background: var(--bg-white);
+  cursor: pointer;
+  overflow: hidden;
+  transition: all 0.2s;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.profileButton:hover {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px var(--primary-light);
+  transform: scale(1.05);
+}
+
+.profileImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.profileInitials {
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: var(--primary-color);
+  background: var(--primary-light);
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.profileDropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  width: 280px;
+  background: var(--bg-card);
+  backdrop-filter: blur(14px);
+  border: 1px solid var(--border-light);
+  border-radius: 16px;
+  box-shadow: 0 12px 32px rgba(96, 58, 44, 0.16);
+  z-index: 1000;
+  overflow: hidden;
+  animation: dropdownFadeIn 0.2s ease;
+}
+
+@keyframes dropdownFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.profileDropdownHeader {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  background: var(--ui-panel-bg);
+}
+
+.profileDropdownAvatar {
+  position: relative;
+}
+
+.profileDropdownImage,
+.profileDropdownInitials {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  border: 3px solid var(--bg-white);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.profileDropdownImage {
+  object-fit: cover;
+}
+
+.profileDropdownInitials {
+  font-weight: 700;
+  font-size: 1.8rem;
+  color: var(--primary-color);
+  background: var(--primary-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.profileImageChangeButton {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 2px solid var(--bg-white);
+  background: var(--primary-color);
+  color: var(--bg-white);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.profileImageChangeButton:hover:not(:disabled) {
+  transform: scale(1.1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.profileImageChangeButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.profileSpinner {
+  width: 14px;
+  height: 14px;
+  border: 2px solid var(--bg-white);
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.profileDropdownInfo {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.profileDropdownName {
+  font-weight: 600;
+  font-size: 1.05rem;
+  color: var(--text-primary);
+}
+
+.profileDropdownOrg {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.8rem;
+  color: var(--primary-color);
+  background: var(--primary-light);
+  padding: 4px 10px;
+  border-radius: 8px;
+  font-weight: 500;
+}
+
+.profileDropdownEmail {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.profileDropdownDivider {
+  height: 1px;
+  background: var(--border-light);
+}
+
+.profileDropdownSection {
+  padding: 8px;
+}
+
+.profileDropdownItem {
+  width: 100%;
+  border: none;
+  background: transparent;
+  padding: 12px 16px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: left;
+}
+
+.profileDropdownItem:hover:not(:disabled) {
+  background: var(--ui-panel-bg);
+  color: var(--primary-color);
+}
+
+.profileDropdownItem:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+@media (max-width: 640px) {
+  .profileDropdown {
+    width: 260px;
+  }
+}

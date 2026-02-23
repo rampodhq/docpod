@@ -1,7 +1,12 @@
 .page {
   min-height: 100vh;
-  background: #fdebe4;
-  color: #2b2b2b;
+  background: linear-gradient(
+    180deg,
+    var(--bg-gradient-start) 0%,
+    var(--bg-gradient-mid) 60%,
+    var(--bg-gradient-end) 100%
+  );
+  color: var(--text-primary);
   font-family: 'Inter', sans-serif;
 }
 
@@ -14,8 +19,8 @@
 }
 
 .sidebar {
-  background: #fff7f4;
-  border: 1px solid #f1d9d1;
+  background: var(--primary-lighter);
+  border: 1px solid var(--border-light);
   border-radius: 16px;
   padding: 18px;
   display: flex;
@@ -28,18 +33,18 @@
   display: flex;
   gap: 12px;
   align-items: center;
-  background: #fff;
+  background: var(--bg-white);
   border-radius: 14px;
   padding: 12px;
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.06);
-  border: 1px solid #f1d9d1;
+  border: 1px solid var(--border-light);
 }
 
 .templateIcon {
   width: 36px;
   height: 36px;
   border-radius: 12px;
-  background: #ffe0d7;
+  background: var(--ui-chip-bg);
 }
 
 .templateName {
@@ -48,7 +53,7 @@
 
 .templateMeta {
   font-size: 0.85rem;
-  color: #8a7f7b;
+  color: var(--text-muted);
 }
 
 .sidebarSectionTitle {
@@ -68,16 +73,16 @@
   align-items: center;
   gap: 10px;
   padding: 10px 12px;
-  background: #fff;
+  background: var(--bg-white);
   border-radius: 12px;
-  border: 1px solid #f1d9d1;
+  border: 1px solid var(--border-light);
   font-size: 0.9rem;
   color: #514844;
 }
 
 .outlineItemActive {
-  background: #ffe9e2;
-  border-color: #f3cfc2;
+  background: var(--ui-active-bg);
+  border-color: var(--ui-active-border);
   font-weight: 600;
 }
 
@@ -85,7 +90,7 @@
   width: 20px;
   height: 20px;
   border-radius: 6px;
-  background: #fde0d4;
+  background: var(--ui-placeholder-bg);
 }
 
 .outlineDrag {
@@ -96,9 +101,9 @@
 
 .outlineAdd {
   margin-top: 6px;
-  border: 1px dashed #f1c4b6;
+  border: 1px dashed var(--ui-dashed-border);
   background: transparent;
-  color: #f38a73;
+  color: var(--primary-color);
   padding: 10px;
   border-radius: 10px;
   font-weight: 600;
@@ -107,9 +112,9 @@
 
 .sidebarFooterAdd {
   margin-top: auto;
-  border: 1px solid #f1d9d1;
-  background: #fff;
-  color: #f38a73;
+  border: 1px solid var(--border-light);
+  background: var(--bg-white);
+  color: var(--primary-color);
   padding: 10px 12px;
   border-radius: 12px;
   font-weight: 600;
@@ -117,10 +122,10 @@
 }
 
 .editor {
-  background: #fff;
+  background: var(--bg-white);
   border-radius: 18px;
   padding: 24px;
-  border: 1px solid #f1d9d1;
+  border: 1px solid var(--border-light);
   box-shadow: 0 12px 20px rgba(0, 0, 0, 0.06);
   display: flex;
   flex-direction: column;
@@ -149,7 +154,7 @@
   width: 28px;
   height: 28px;
   border-radius: 10px;
-  background: #ffe0d7;
+  background: var(--ui-chip-bg);
 }
 
 .editorHeading {
@@ -164,8 +169,8 @@
 }
 
 .previewButton {
-  border: 1px solid #f1d9d1;
-  background: #fff;
+  border: 1px solid var(--border-light);
+  background: var(--bg-white);
   color: #7c6f6a;
   padding: 8px 16px;
   border-radius: 10px;
@@ -179,8 +184,8 @@
   justify-content: space-between;
   padding: 12px 16px;
   border-radius: 12px;
-  border: 1px solid #f1d9d1;
-  background: #fff9f7;
+  border: 1px solid var(--border-light);
+  background: var(--ui-panel-bg);
   font-weight: 500;
   color: #514844;
 }
@@ -195,10 +200,10 @@
 }
 
 .textArea {
-  border: 1px solid #f1d9d1;
+  border: 1px solid var(--border-light);
   border-radius: 14px;
   padding: 14px 16px;
-  background: #fff;
+  background: var(--bg-white);
   color: #5b514d;
   font-size: 0.95rem;
   line-height: 1.5;
@@ -216,12 +221,12 @@
   width: 18px;
   height: 18px;
   border-radius: 50%;
-  background: #ffe0d7;
+  background: var(--ui-chip-bg);
   display: inline-flex;
   align-items: center;
   justify-content: center;
   font-size: 0.75rem;
-  color: #f38a73;
+  color: var(--primary-color);
 }
 
 .inputList {
@@ -231,10 +236,10 @@
 }
 
 .inputCard {
-  border: 1px solid #f1d9d1;
+  border: 1px solid var(--border-light);
   border-radius: 14px;
   padding: 12px 16px;
-  background: #fff;
+  background: var(--bg-white);
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.04);
 }
 
@@ -247,7 +252,7 @@
 }
 
 .required {
-  color: #f38a73;
+  color: var(--primary-color);
   font-size: 0.7rem;
   font-weight: 700;
   text-transform: uppercase;
@@ -256,16 +261,16 @@
 .inputPlaceholder {
   margin-top: 8px;
   color: #a79a96;
-  background: #fff9f7;
+  background: var(--ui-panel-bg);
   border-radius: 10px;
   padding: 10px 12px;
   font-size: 0.9rem;
 }
 
 .addInput {
-  border: 1px dashed #f1c4b6;
-  background: #fff;
-  color: #f38a73;
+  border: 1px dashed var(--ui-dashed-border);
+  background: var(--bg-white);
+  color: var(--primary-color);
   padding: 12px;
   border-radius: 12px;
   font-weight: 600;
@@ -282,8 +287,8 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: #fff;
-  border: 1px solid #f1d9d1;
+  background: var(--bg-white);
+  border: 1px solid var(--border-light);
   border-radius: 12px;
   padding: 10px 14px;
   font-weight: 600;
@@ -298,10 +303,10 @@
 }
 
 .previewCard {
-  background: #fff;
+  background: var(--bg-white);
   border-radius: 16px;
   padding: 18px;
-  border: 1px solid #f1d9d1;
+  border: 1px solid var(--border-light);
   box-shadow: 0 10px 18px rgba(0, 0, 0, 0.06);
   display: flex;
   flex-direction: column;
@@ -326,9 +331,9 @@
 }
 
 .previewBadge {
-  background: #fff2ed;
-  border: 1px solid #f1d9d1;
-  color: #f38a73;
+  background: var(--ui-subtle-bg);
+  border: 1px solid var(--border-light);
+  color: var(--primary-color);
   padding: 6px 10px;
   border-radius: 12px;
   font-size: 0.75rem;
@@ -338,7 +343,7 @@
 .previewDivider {
   height: 3px;
   border-radius: 999px;
-  background: linear-gradient(90deg, #f38a73, #ffb59f);
+  background: linear-gradient(90deg, var(--primary-color), var(--ui-gradient-light));
 }
 
 .previewSection {
@@ -350,7 +355,7 @@
 .previewBlockShort {
   height: 10px;
   border-radius: 8px;
-  background: #fbe7e0;
+  background: var(--ui-badge-bg);
 }
 
 .previewBlockShort {
@@ -361,7 +366,7 @@
   display: flex;
   align-items: center;
   gap: 12px;
-  border-top: 1px solid #f1d9d1;
+  border-top: 1px solid var(--border-light);
   padding-top: 12px;
   font-size: 0.85rem;
 }
@@ -371,35 +376,35 @@
 }
 
 .previewOptionActive {
-  color: #f38a73;
+  color: var(--primary-color);
   font-weight: 600;
 }
 
 .previewSave {
   border: none;
-  background: #f38a73;
-  color: #fff;
+  background: var(--primary-color);
+  color: var(--bg-white);
   padding: 12px;
   border-radius: 14px;
   font-weight: 600;
-  box-shadow: 0 8px 16px rgba(243, 138, 115, 0.3);
+  box-shadow: var(--shadow-primary-lg);
   cursor: pointer;
 }
 
 .cancelLink {
-  color: #7c6f6a;
+  color: var(--text-secondary);
   text-decoration: none;
   font-weight: 600;
 }
 
 .primaryButton {
   border: none;
-  background: #f38a73;
-  color: #fff;
+  background: var(--primary-color);
+  color: var(--bg-white);
   padding: 10px 18px;
   border-radius: 999px;
   font-weight: 600;
-  box-shadow: 0 8px 16px rgba(243, 138, 115, 0.3);
+  box-shadow: var(--shadow-primary-lg);
   cursor: pointer;
 }
 

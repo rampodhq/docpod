@@ -1,0 +1,295 @@
+.container {
+  --gs-bg-1: #f9efe8;
+  --gs-bg-2: #f4ded3;
+  --gs-bg-3: #e7cdc4;
+  --gs-ink: #2f211c;
+  --gs-ink-soft: #5f4b43;
+  --gs-brand: #f38a73;
+  --gs-brand-strong: #d86952;
+  --gs-card: rgba(255, 250, 247, 0.86);
+  --gs-card-border: rgba(255, 255, 255, 0.72);
+
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  isolation: isolate;
+  background:
+    radial-gradient(120% 90% at 12% 8%, rgba(255, 255, 255, 0.78) 0%, rgba(255, 255, 255, 0) 60%),
+    radial-gradient(90% 78% at 88% 18%, rgba(247, 187, 163, 0.48) 0%, rgba(247, 187, 163, 0) 68%),
+    linear-gradient(122deg, var(--gs-bg-1) 0%, var(--gs-bg-2) 45%, var(--gs-bg-3) 100%);
+  padding: 2rem;
+  overflow: hidden;
+}
+
+.container::before,
+.container::after {
+  content: "";
+  position: absolute;
+  inset: -20%;
+  pointer-events: none;
+}
+
+.container::before {
+  background:
+    linear-gradient(
+      128deg,
+      rgba(255, 255, 255, 0.5) 12%,
+      rgba(244, 188, 165, 0.22) 30%,
+      rgba(255, 255, 255, 0.5) 49%,
+      rgba(229, 177, 155, 0.18) 67%,
+      rgba(255, 255, 255, 0.46) 82%
+    );
+  filter: blur(36px) saturate(120%);
+  transform: rotate(-8deg) scale(1.2);
+  animation: satinDrift 15s ease-in-out infinite alternate;
+  opacity: 0.9;
+}
+
+.container::after {
+  background:
+    repeating-linear-gradient(
+      -38deg,
+      rgba(255, 255, 255, 0.22) 0,
+      rgba(255, 255, 255, 0.22) 28px,
+      rgba(224, 177, 157, 0.12) 28px,
+      rgba(224, 177, 157, 0.12) 56px
+    );
+  filter: blur(18px);
+  transform: translateY(7%) scale(1.08);
+  animation: satinWave 19s ease-in-out infinite;
+  opacity: 0.5;
+}
+
+.content {
+  width: 100%;
+  max-width: 900px;
+  position: relative;
+  z-index: 1;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.logo {
+  margin-bottom: 2rem;
+}
+
+.logoText {
+  font-size: 3rem;
+  font-weight: 700;
+  color: var(--gs-ink);
+  text-shadow: 0 8px 24px rgba(255, 255, 255, 0.3);
+}
+
+.logoAccent {
+  color: var(--gs-brand-strong);
+}
+
+.title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--gs-ink);
+  margin-bottom: 0.75rem;
+}
+
+.subtitle {
+  font-size: 1.125rem;
+  color: var(--gs-ink-soft);
+}
+
+.options {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.optionCard {
+  background: var(--gs-card);
+  backdrop-filter: blur(14px);
+  border-radius: 20px;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  cursor: pointer;
+  border: 1.5px solid var(--gs-card-border);
+  transition: transform 0.28s ease, box-shadow 0.28s ease, border-color 0.28s ease;
+  text-align: left;
+  position: relative;
+  overflow: hidden;
+  box-shadow:
+    0 28px 36px rgba(117, 71, 55, 0.14),
+    inset 0 1px 0 rgba(255, 255, 255, 0.42);
+}
+
+.optionCard::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(130deg, rgba(243, 138, 115, 0.13), rgba(216, 105, 82, 0.12));
+  opacity: 0;
+  transition: opacity 0.28s ease;
+  z-index: 0;
+}
+
+.optionCard:hover::before {
+  opacity: 1;
+}
+
+.optionCard:hover {
+  transform: translateY(-7px);
+  border-color: rgba(216, 105, 82, 0.4);
+  box-shadow:
+    0 34px 48px rgba(117, 71, 55, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.62);
+}
+
+.optionCard:hover .optionArrow {
+  transform: translateX(4px);
+}
+
+.optionIcon {
+  width: 64px;
+  height: 64px;
+  border-radius: 12px;
+  background: linear-gradient(136deg, var(--gs-brand), var(--gs-brand-strong));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  position: relative;
+  z-index: 1;
+}
+
+.optionContent {
+  flex: 1;
+  position: relative;
+  z-index: 1;
+}
+
+.optionTitle {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--gs-ink);
+  margin-bottom: 0.5rem;
+}
+
+.optionDescription {
+  font-size: 1rem;
+  color: var(--gs-ink-soft);
+  margin-bottom: 1rem;
+}
+
+.optionFeatures {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.optionFeatures li {
+  font-size: 0.875rem;
+  color: var(--gs-ink-soft);
+  padding-left: 1.5rem;
+  position: relative;
+}
+
+.optionFeatures li::before {
+  content: '✓';
+  position: absolute;
+  left: 0;
+  color: var(--gs-brand-strong);
+  font-weight: 700;
+}
+
+.optionArrow {
+  position: absolute;
+  top: 2rem;
+  right: 2rem;
+  color: var(--gs-brand-strong);
+  transition: transform 0.3s ease;
+  z-index: 1;
+}
+
+.footer {
+  text-align: center;
+  padding-top: 1.5rem;
+}
+
+.footerText {
+  font-size: 1rem;
+  color: var(--gs-ink-soft);
+}
+
+.footerLink {
+  background: none;
+  border: none;
+  color: var(--gs-ink);
+  font-weight: 600;
+  text-decoration: underline;
+  cursor: pointer;
+  font-size: 1rem;
+  padding: 0;
+  transition: opacity 0.2s ease;
+}
+
+.footerLink:hover {
+  opacity: 0.72;
+}
+
+@keyframes satinDrift {
+  0% {
+    transform: rotate(-10deg) translate3d(-3%, -2%, 0) scale(1.16);
+  }
+  100% {
+    transform: rotate(-3deg) translate3d(3%, 2%, 0) scale(1.22);
+  }
+}
+
+@keyframes satinWave {
+  0% {
+    transform: translate3d(-2%, 6%, 0) rotate(-2deg) scale(1.1);
+  }
+  50% {
+    transform: translate3d(2%, -4%, 0) rotate(1deg) scale(1.07);
+  }
+  100% {
+    transform: translate3d(3%, 8%, 0) rotate(-1deg) scale(1.11);
+  }
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 1.25rem;
+  }
+
+  .title {
+    font-size: 2rem;
+  }
+
+  .subtitle {
+    font-size: 1rem;
+  }
+
+  .options {
+    grid-template-columns: 1fr;
+  }
+
+  .optionCard {
+    padding: 1.5rem;
+  }
+
+  .optionTitle {
+    font-size: 1.25rem;
+  }
+}
