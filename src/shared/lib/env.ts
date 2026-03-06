@@ -1,8 +1,8 @@
 import { z } from "zod";
 
 const EnvSchema = z.object({
-  NEXT_PUBLIC_API_BASE_URL: z.string().url().default("http://localhost:8000"),
-  NEXT_PUBLIC_APP_NAME: z.string().default("DocPod"),
+  NEXT_PUBLIC_API_BASE_URL: z.string().url().default("https://api.rampod.co"),
+  NEXT_PUBLIC_APP_NAME: z.string().default("docpod"),
 });
 
 const parsed = EnvSchema.safeParse({
