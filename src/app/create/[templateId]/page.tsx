@@ -2,8 +2,8 @@ import CreateDocumentPageClient from "./CreateDocumentPageClient";
 
 export const dynamicParams = false;
 
-export function generateStaticParams() {
-  return [];
+export async function generateStaticParams() {
+  return [{ templateId: "preview" }];
 }
 
 export default function CreateDocumentPage() {
