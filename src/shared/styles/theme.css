@@ -4,92 +4,92 @@
  */
 
 :root {
-  /* Primary Colors - These will be dynamically updated based on theme selection */
-  --primary-color: #e8866f;
-  --secondary-color: #c96e5b;
-  --accent-color: #d96f5a;
-  --primary-hover: #f0a28f;
-  --primary-light: #ffe9e0;
-  --primary-lighter: #fff6f1;
-  --primary-pale: #f9dfd4;
-  
+  /* Primary Colors - Sky Blue Default */
+  --primary-color: #0ea5e9;
+  --secondary-color: #0369a1;
+  --accent-color: #0284c7;
+  --primary-hover: #0284c7;
+  --primary-light: #e0f2fe;
+  --primary-lighter: #f0f9ff;
+  --primary-pale: #dbeafe;
+
   /* Background Colors */
-  --bg-primary: #f4dfd4;
-  --bg-gradient-start: #f9efe8;
-  --bg-gradient-mid: #f5e5dc;
-  --bg-gradient-end: #ead4ca;
-  --bg-white: #fffdfb;
-  --bg-card: rgba(255, 251, 248, 0.88);
-  --bg-hover: #fff6f1;
-  --bg-subtle: #fbf2ed;
-  --bg-satin-overlay: rgba(255, 255, 255, 0.6);
-  
+  --bg-primary: #f5faff;
+  --bg-gradient-start: #f7fcff;
+  --bg-gradient-mid: #ebf7ff;
+  --bg-gradient-end: #dff2ff;
+  --bg-white: #ffffff;
+  --bg-card: rgba(255, 255, 255, 0.92);
+  --bg-hover: #eef8ff;
+  --bg-subtle: #e9f6ff;
+  --bg-satin-overlay: rgba(255, 255, 255, 0.76);
+
   /* Border Colors */
-  --border-primary: #e7cfc4;
-  --border-secondary: #e4cabf;
-  --border-light: #efd8ce;
-  --border-lighter: #f1ddd4;
-  --border-accent: #ebd3c9;
-  
+  --border-primary: #bfdbfe;
+  --border-secondary: #bae6fd;
+  --border-light: #dbeafe;
+  --border-lighter: #e0f2fe;
+  --border-accent: #93c5fd;
+
   /* Text Colors */
-  --text-primary: #2f211c;
-  --text-secondary: #5f4a42;
-  --text-muted: #7f6c65;
-  --text-light: #94817a;
-  --text-lighter: #a1928d;
-  
+  --text-primary: #082f49;
+  --text-secondary: #0c4a6e;
+  --text-muted: #3b6f8f;
+  --text-light: #5b86a4;
+  --text-lighter: #7aa3be;
+
   /* Icon/Badge Colors - Tones */
-  --tone-peach: #fde5dc;
-  --tone-sage: #e6f2ef;
-  --tone-sand: #f3e9df;
-  
+  --tone-peach: #dbeafe;
+  --tone-sage: #e0f2fe;
+  --tone-sand: #eff6ff;
+
   /* Additional UI Colors */
-  --ui-header-bg: #e9d2c9;
-  --ui-divider: #f0cdbf;
-  --ui-input-border: #e7d2c8;
-  --ui-badge-bg: #f9e2d9;
-  --ui-chip-bg: #ffe2d8;
-  --ui-hover-light: #fdf3ee;
-  --ui-active-bg: #ffe8df;
-  --ui-active-border: #edc7b9;
-  --ui-placeholder-bg: #f4d7cb;
-  --ui-dashed-border: #eeb8a7;
-  --ui-panel-bg: #fff8f4;
-  --ui-subtle-bg: #fff0e8;
-  --ui-gradient-light: #f5b29d;
-  --ui-focus-border: #e4a998;
-  --ui-disabled-bg: #f5f5f5;
-  --ui-overlay-bg: #f7e5dd;
-  --ui-muted-bg: #ffefe8;
-  --ui-neutral-bg: #e3d1ca;
-  
+  --ui-header-bg: #dbeafe;
+  --ui-divider: #bfdbfe;
+  --ui-input-border: #cfe8fb;
+  --ui-badge-bg: #e0f2fe;
+  --ui-chip-bg: #dbeafe;
+  --ui-hover-light: #eef8ff;
+  --ui-active-bg: #dbeafe;
+  --ui-active-border: #93c5fd;
+  --ui-placeholder-bg: #e0f2fe;
+  --ui-dashed-border: #7dd3fc;
+  --ui-panel-bg: #f7fcff;
+  --ui-subtle-bg: #eff6ff;
+  --ui-gradient-light: #38bdf8;
+  --ui-focus-border: #0ea5e9;
+  --ui-disabled-bg: #f1f5f9;
+  --ui-overlay-bg: #eaf6ff;
+  --ui-muted-bg: #edf6fd;
+  --ui-neutral-bg: #c7e5fb;
+
   /* Accent Colors */
-  --accent-danger: #e86d6d;
-  --accent-danger-bg: #fff0f0;
-  --accent-warning: #d57966;
-  --accent-warning-bg: #ffe8de;
-  --accent-info: #FF8C6B;
-  
+  --accent-danger: #dc2626;
+  --accent-danger-bg: #fef2f2;
+  --accent-warning: #0369a1;
+  --accent-warning-bg: #e0f2fe;
+  --accent-info: #0284c7;
+
   /* Shadow Colors */
-  --shadow-sm: 0 4px 10px rgba(0, 0, 0, 0.06);
-  --shadow-md: 0 6px 12px rgba(0, 0, 0, 0.06);
-  --shadow-lg: 0 10px 18px rgba(0, 0, 0, 0.08);
-  --shadow-xl: 0 12px 20px rgba(0, 0, 0, 0.08);
-  --shadow-primary: 0 10px 16px rgba(232, 134, 111, 0.35);
-  --shadow-primary-hover: 0 14px 22px rgba(232, 134, 111, 0.45);
-  --shadow-primary-sm: 0 2px 8px rgba(232, 134, 111, 0.15);
-  --shadow-primary-md: 0 4px 12px rgba(232, 134, 111, 0.15);
-  --shadow-primary-lg: 0 8px 16px rgba(232, 134, 111, 0.3);
-  --shadow-primary-xl: 0 14px 26px rgba(232, 134, 111, 0.38);
-  --shadow-primary-subtle: 0 8px 16px rgba(232, 134, 111, 0.18);
-  --shadow-primary-focus: 0 0 0 3px rgba(232, 134, 111, 0.15);
-  --shadow-primary-focus-lg: 0 0 0 4px rgba(232, 134, 111, 0.1);
-  --shadow-button: 0 4px 12px rgba(232, 134, 111, 0.25);
-  
+  --shadow-sm: 0 4px 10px rgba(2, 132, 199, 0.08);
+  --shadow-md: 0 6px 12px rgba(2, 132, 199, 0.1);
+  --shadow-lg: 0 10px 18px rgba(2, 132, 199, 0.12);
+  --shadow-xl: 0 12px 20px rgba(2, 132, 199, 0.14);
+  --shadow-primary: 0 10px 16px rgba(14, 165, 233, 0.28);
+  --shadow-primary-hover: 0 14px 22px rgba(14, 165, 233, 0.36);
+  --shadow-primary-sm: 0 2px 8px rgba(14, 165, 233, 0.14);
+  --shadow-primary-md: 0 4px 12px rgba(14, 165, 233, 0.16);
+  --shadow-primary-lg: 0 8px 16px rgba(14, 165, 233, 0.24);
+  --shadow-primary-xl: 0 14px 26px rgba(14, 165, 233, 0.3);
+  --shadow-primary-subtle: 0 8px 16px rgba(14, 165, 233, 0.16);
+  --shadow-primary-focus: 0 0 0 3px rgba(14, 165, 233, 0.15);
+  --shadow-primary-focus-lg: 0 0 0 4px rgba(14, 165, 233, 0.1);
+  --shadow-button: 0 4px 12px rgba(14, 165, 233, 0.22);
+
   /* Scrollbar Colors */
-  --scrollbar-track: #fdf6f3;
-  --scrollbar-thumb: #f1d9d1;
-  --scrollbar-thumb-hover: #e8c7ba;
+  --scrollbar-track: #e6f3ff;
+  --scrollbar-thumb: #93c5fd;
+  --scrollbar-thumb-hover: #60a5fa;
 }
 
 /* Common Page Backgrounds */

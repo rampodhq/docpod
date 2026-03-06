@@ -5,16 +5,21 @@ services:
       dockerfile: Dockerfile
     environment:
       APP_ENV: local
+      UV_PROJECT_ENVIRONMENT: /opt/venv
       DATABASE_URL: postgresql+asyncpg://postgres:postgres@host.docker.internal:5433/docpod
       JWT_SECRET_KEY: "CHANGE_ME_IN_REAL_ENV"
       JWT_ALGORITHM: "HS256"
       JWT_ACCESS_TOKEN_EXPIRE_MINUTES: "60"
+      CELERY_BROKER_URL: redis://redis:6379/0
+      CELERY_RESULT_BACKEND: redis://redis:6379/1
+      REDIS_CACHE_URL: redis://redis:6379/2
       SHARED_STORAGE_PATH: /shared_storage
     command: ["uv", "run", "uvicorn", "app.main:app", "--host=0.0.0.0", "--port=8000", "--reload"]
     ports:
       - "8000:8000"
     volumes:
       - ./:/app
+      - docpod_venv:/opt/venv
       - docpod_shared_storage:/shared_storage
     depends_on:
       postgres:
@@ -52,16 +57,19 @@ services:
       dockerfile: Dockerfile
     environment:
       APP_ENV: local
+      UV_PROJECT_ENVIRONMENT: /opt/venv
       DATABASE_URL: postgresql+asyncpg://postgres:postgres@host.docker.internal:5433/docpod
       JWT_SECRET_KEY: "CHANGE_ME_IN_REAL_ENV"
       JWT_ALGORITHM: "HS256"
       JWT_ACCESS_TOKEN_EXPIRE_MINUTES: "60"
-      CELERY_BROKER_URL: redis://host.docker.internal:6379/0
-      CELERY_RESULT_BACKEND: redis://host.docker.internal:6379/1
+      CELERY_BROKER_URL: redis://redis:6379/0
+      CELERY_RESULT_BACKEND: redis://redis:6379/1
+      REDIS_CACHE_URL: redis://redis:6379/2
       SHARED_STORAGE_PATH: /shared_storage
     command: ["uv", "run", "celery", "-A", "app.core.celery_app:celery_app", "worker", "--loglevel=INFO", "--concurrency=2"]
     volumes:
       - ./:/app
+      - docpod_venv:/opt/venv
       - docpod_shared_storage:/shared_storage
     depends_on:
       postgres:
@@ -71,4 +79,5 @@ services:
 volumes:
   docpod_pgdata:
   docpod_redisdata:
+  docpod_venv:
   docpod_shared_storage:

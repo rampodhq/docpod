@@ -25,7 +25,24 @@ class TemplateCreateRequest(BaseModel):
     name: str | None = Field(default=None, max_length=255)
     description: str | None = None
     icon: str | None = Field(default=None, max_length=100)
+    document_context_inputs: list["TemplateContextInputUpsert"] = Field(default_factory=list)
     sections: list["TemplateSectionUpsert"] = Field(default_factory=list)
+
+    @model_validator(mode="after")
+    def validate_unique_order(self) -> "TemplateCreateRequest":
+        section_orders = [s.order_index for s in self.sections]
+        if len(section_orders) != len(set(section_orders)):
+            raise ValueError("section order_index must be unique within template")
+
+        doc_input_orders = [i.order_index for i in self.document_context_inputs]
+        if len(doc_input_orders) != len(set(doc_input_orders)):
+            raise ValueError("document context input order_index must be unique")
+
+        for s in self.sections:
+            input_orders = [i.order_index for i in s.context_inputs]
+            if len(input_orders) != len(set(input_orders)):
+                raise ValueError("context input order_index must be unique within section")
+        return self
 
 
 class TemplateContextInputUpsert(BaseModel):
@@ -89,6 +106,7 @@ class TemplateUpdateRequest(BaseModel):
     name: str = Field(min_length=1, max_length=255)
     description: str | None = None
     icon: str | None = Field(default=None, max_length=100)
+    document_context_inputs: list[TemplateContextInputUpsert] = Field(default_factory=list)
     sections: list[TemplateSectionUpsert] = Field(default_factory=list)
 
     @model_validator(mode="after")
@@ -96,6 +114,10 @@ class TemplateUpdateRequest(BaseModel):
         section_orders = [s.order_index for s in self.sections]
         if len(section_orders) != len(set(section_orders)):
             raise ValueError("section order_index must be unique within template")
+
+        doc_input_orders = [i.order_index for i in self.document_context_inputs]
+        if len(doc_input_orders) != len(set(doc_input_orders)):
+            raise ValueError("document context input order_index must be unique")
 
         for s in self.sections:
             input_orders = [i.order_index for i in s.context_inputs]
@@ -139,6 +161,7 @@ class TemplateRead(BaseModel):
     is_active: bool
     created_at: datetime
     updated_at: datetime
+    document_context_inputs: list[TemplateContextInputRead] = Field(default_factory=list)
     sections: list[TemplateSectionRead]
 
     class Config:

@@ -1,0 +1,9 @@
+versions:
+  v1:
+    stages:
+      section_plan:
+        system: generation/v1/section_plan.system.md
+        user: generation/v1/section_plan.user.md
+      section_draft:
+        system: generation/v1/section_draft.system.md
+        user: generation/v1/section_draft.user.md

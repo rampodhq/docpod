@@ -215,21 +215,22 @@
   display: grid;
   place-items: center;
   font-size: 1.4rem;
-  color: var(--text-primary);
-  border: 1px solid rgba(255, 255, 255, 0.8);
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.4);
+  color: var(--bg-white);
+  border: 1px solid color-mix(in srgb, var(--primary-color) 30%, white 70%);
+  box-shadow: var(--shadow-primary-md);
+  background: var(--primary-color);
 }
 
 .docIconPeach {
-  background: var(--tone-peach);
+  background: var(--primary-color);
 }
 
 .docIconSage {
-  background: var(--tone-sage);
+  background: var(--primary-color);
 }
 
 .docIconSand {
-  background: var(--tone-sand);
+  background: var(--primary-color);
 }
 
 .rowText {

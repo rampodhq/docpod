@@ -1,13 +1,16 @@
 "use client";
 
 import { useParams, useRouter } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import { BuilderShell, ContextInputsCollector } from "@/features/builder";
 import styles from "@/features/builder/components/builder.module.css";
 import { FileText, Download, Save, X, AlertCircle, Loader2, Sparkles } from "lucide-react";
 import type { ContextInputValue } from "@/features/templates/data/templates.management.data";
 import type { ManagedTemplate } from "@/features/templates/data/templates.management.data";
 import { templatesApi } from "@/features/templates/api/templates.api";
+import { generationsApi } from "@/features/generation/api/generations.api";
 import { mapReadToManagedTemplate } from "@/features/templates/lib/templateMappers";
 import {
   TEMPLATE_ICONS,
@@ -38,7 +41,12 @@ export default function CreateDocumentPage() {
   const [contextValues, setContextValues] = useState<ContextInputValue[]>([]);
   const [isContextModalOpen, setIsContextModalOpen] = useState(false);
   const [isMissingInputsModalOpen, setIsMissingInputsModalOpen] = useState(false);
+  const [isDownloadModalOpen, setIsDownloadModalOpen] = useState(false);
   const [missingInputLabels, setMissingInputLabels] = useState<string[]>([]);
+  const [activeJobId, setActiveJobId] = useState<string | null>(null);
+  const [activeDocumentId, setActiveDocumentId] = useState<string | null>(null);
+  const streamRef = useRef<EventSource | null>(null);
+  const logCounterRef = useRef(0);
 
   useEffect(() => {
     let ignore = false;
@@ -67,9 +75,18 @@ export default function CreateDocumentPage() {
     };
   }, [templateId]);
 
+  useEffect(() => {
+    return () => {
+      if (streamRef.current) {
+        streamRef.current.close();
+      }
+    };
+  }, []);
+
   const addLog = (type: GenerationLog["type"], message: string) => {
+    logCounterRef.current += 1;
     const newLog: GenerationLog = {
-      id: Date.now().toString(),
+      id: `${Date.now()}-${logCounterRef.current}`,
       timestamp: new Date(),
       type,
       message,
@@ -77,77 +94,50 @@ export default function CreateDocumentPage() {
     setLogs((prev) => [...prev, newLog]);
   };
 
-  const simulateStreaming = async () => {
-    setGenerationState("generating");
-    setDocumentContent("");
-    setLogs([]);
-
-    addLog("info", "Starting document generation...");
-    await new Promise((resolve) => setTimeout(resolve, 500));
-
-    addLog("info", "Loading template structure...");
-    await new Promise((resolve) => setTimeout(resolve, 300));
-
-    addLog("success", "Template loaded successfully");
-    await new Promise((resolve) => setTimeout(resolve, 300));
-
-    addLog("info", "Generating document sections...");
-    
-    const sections = [
-      {
-        title: "Executive Summary",
-        content: "This comprehensive project proposal outlines our strategic approach to delivering exceptional results for your organization. Our team brings extensive experience and a proven track record of success in similar initiatives.\n\n",
-      },
-      {
-        title: "Project Overview",
-        content: "Our proposed solution addresses the key challenges identified during our initial consultation. We have designed a systematic approach that ensures measurable outcomes and sustainable growth.\n\n",
-      },
-      {
-        title: "Scope of Work",
-        content: "The project will be executed in three distinct phases:\n\n• Phase 1: Discovery and Planning (2 weeks)\n• Phase 2: Implementation (6 weeks)\n• Phase 3: Optimization and Handoff (2 weeks)\n\n",
-      },
-      {
-        title: "Deliverables",
-        content: "Throughout the engagement, we will provide:\n\n• Comprehensive project documentation\n• Weekly progress reports\n• Training materials and knowledge transfer\n• Post-project support for 30 days\n\n",
-      },
-      {
-        title: "Timeline and Milestones",
-        content: "The project timeline spans 10 weeks with key milestones:\n\n• Week 2: Project kickoff and discovery complete\n• Week 4: Initial implementation phase\n• Week 8: Testing and refinement\n• Week 10: Final delivery and handoff\n\n",
-      },
-      {
-        title: "Investment",
-        content: "The total project investment is structured as follows:\n\nInitial Setup: $5,000\nMonthly Management: $3,500\nTotal First Quarter: $15,500\n\nThis includes all deliverables, support, and training mentioned above.\n\n",
-      },
-    ];
-
-    for (const section of sections) {
-      addLog("info", `Generating: ${section.title}`);
-      await new Promise((resolve) => setTimeout(resolve, 400));
-
-      const sectionHeader = `## ${section.title}\n\n`;
-      setDocumentContent((prev) => prev + sectionHeader);
-      await new Promise((resolve) => setTimeout(resolve, 200));
-
-      // Stream content word by word
-      const words = section.content.split(" ");
-      for (const word of words) {
-        setDocumentContent((prev) => prev + word + " ");
-        await new Promise((resolve) => setTimeout(resolve, 30));
-      }
-
-      addLog("success", `Completed: ${section.title}`);
-      await new Promise((resolve) => setTimeout(resolve, 200));
+  const closeStream = () => {
+    if (streamRef.current) {
+      streamRef.current.close();
+      streamRef.current = null;
     }
-
-    addLog("success", "Document generation completed!");
-    setGenerationState("completed");
   };
 
-  const handleGenerate = () => {
+  const syncFinalDocument = async (jobId: string, documentId: string) => {
+    try {
+      const [job, content] = await Promise.all([
+        generationsApi.getJob(jobId),
+        generationsApi.getDocumentContent(documentId),
+      ]);
+      if (content.content_markdown) {
+        setDocumentContent(content.content_markdown);
+      } else if (job.final_markdown) {
+        setDocumentContent(job.final_markdown);
+      }
+
+      if (job.status === "SUCCEEDED") {
+        setGenerationState("completed");
+        addLog("success", "Document generation completed.");
+        return;
+      }
+      if (job.status === "FAILED" || job.status === "CANCELLED") {
+        setGenerationState("error");
+        addLog("error", job.error_message || "Generation failed.");
+      }
+    } catch (error) {
+      setGenerationState("error");
+      addLog(
+        "error",
+        error instanceof Error ? `Failed to fetch final document: ${error.message}` : "Failed to fetch final document.",
+      );
+    }
+  };
+
+  const handleGenerate = async () => {
     // Validate required context inputs
     if (template) {
-      const allRequiredInputs = template.sections
-        .flatMap((s) => s.contextInputs?.filter((ci) => ci.required) || []);
+      const allRequiredInputs = [
+        ...(template.documentContextInputs?.filter((ci) => ci.required) || []),
+        ...template.sections.flatMap((s) => s.contextInputs?.filter((ci) => ci.required) || []),
+      ];
       
       const missingInputs = allRequiredInputs.filter(
         (input) => !contextValues.find((v) => v.inputId === input.id)
@@ -161,20 +151,103 @@ export default function CreateDocumentPage() {
       }
     }
 
-    simulateStreaming();
+    try {
+      closeStream();
+      setGenerationState("generating");
+      setDocumentContent("");
+      setLogs([]);
+      addLog("info", "Submitting generation request...");
+
+      const response = await generationsApi.create({
+        template_id: templateId,
+        title: documentTitle || "Untitled Document",
+        context_values: contextValues.map((value) => ({
+          input_id: value.inputId,
+          type: value.type === "url" ? "WEBSITE" : value.type === "file" ? "FILE" : "TEXT",
+          value: value.value,
+          file_name: value.fileName,
+        })),
+      });
+
+      setActiveJobId(response.job_id);
+      setActiveDocumentId(response.document_id);
+      addLog("success", `Generation queued: ${response.job_id}`);
+
+      const stream = new EventSource(generationsApi.getStreamUrl(response.job_id));
+      streamRef.current = stream;
+
+      const onEvent = (event: MessageEvent) => {
+        try {
+          const data = JSON.parse(event.data) as { event_type?: string; message?: string };
+          const eventType = data.event_type || "info";
+          const message = data.message || "Generation update";
+          if (eventType.includes("FAILED")) {
+            addLog("error", message);
+          } else if (eventType.includes("COMPLETED")) {
+            addLog("success", message);
+          } else {
+            addLog("info", message);
+          }
+        } catch {
+          addLog("info", "Generation event received");
+        }
+      };
+
+      stream.addEventListener("JOB_STARTED", onEvent as EventListener);
+      stream.addEventListener("RETRIEVAL_INDEXED", onEvent as EventListener);
+      stream.addEventListener("SECTION_COMPLETED", onEvent as EventListener);
+      stream.addEventListener("JOB_COMPLETED", onEvent as EventListener);
+      stream.addEventListener("JOB_FAILED", onEvent as EventListener);
+
+      stream.addEventListener("done", async () => {
+        closeStream();
+        await syncFinalDocument(response.job_id, response.document_id);
+      });
+
+      stream.onerror = async () => {
+        closeStream();
+        addLog("warning", "Live stream disconnected. Syncing final state...");
+        await syncFinalDocument(response.job_id, response.document_id);
+      };
+    } catch (error) {
+      setGenerationState("error");
+      addLog("error", error instanceof Error ? error.message : "Failed to start generation.");
+    }
   };
 
   const handleDownload = () => {
-    const blob = new Blob([documentContent], { type: "text/plain" });
+    setIsDownloadModalOpen(true);
+  };
+
+  const triggerBlobDownload = (blob: Blob, fileName: string) => {
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = `${documentTitle.replace(/\s+/g, "_")}.txt`;
+    a.download = fileName;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
-    addLog("success", "Document downloaded successfully");
+  };
+
+  const handleDownloadFormat = async (format: "md" | "pdf" | "docx") => {
+    try {
+      if (activeDocumentId) {
+        const { blob, filename } = await generationsApi.downloadDocument(activeDocumentId, format);
+        triggerBlobDownload(blob, filename);
+      } else {
+        if (format !== "md") {
+          addLog("error", "PDF/DOCX download is available after generation completes.");
+          return;
+        }
+        const fallbackName = `${documentTitle.replace(/\s+/g, "_") || "document"}.md`;
+        triggerBlobDownload(new Blob([documentContent], { type: "text/markdown" }), fallbackName);
+      }
+      addLog("success", `Document downloaded as ${format.toUpperCase()}.`);
+      setIsDownloadModalOpen(false);
+    } catch (error) {
+      addLog("error", error instanceof Error ? error.message : "Failed to download document.");
+    }
   };
 
   const handleSave = () => {
@@ -185,9 +258,18 @@ export default function CreateDocumentPage() {
     }, 1000);
   };
 
-  const handleCancel = () => {
+  const handleCancel = async () => {
     if (generationState === "generating") {
       if (confirm("Generation is in progress. Are you sure you want to cancel?")) {
+        if (activeJobId) {
+          try {
+            await generationsApi.cancel(activeJobId);
+            addLog("warning", "Generation cancelled.");
+          } catch {
+            addLog("warning", "Failed to cancel on server. Exiting view.");
+          }
+        }
+        closeStream();
         router.push("/");
       }
     } else {
@@ -198,12 +280,18 @@ export default function CreateDocumentPage() {
   // Collect all context inputs from template sections
   const allRequiredInputs = useMemo(() => {
     if (!template) return [];
-    return template.sections.flatMap((s) => s.contextInputs?.filter((ci) => ci.required) || []);
+    return [
+      ...(template.documentContextInputs?.filter((ci) => ci.required) || []),
+      ...template.sections.flatMap((s) => s.contextInputs?.filter((ci) => ci.required) || []),
+    ];
   }, [template]);
 
   const allRecommendedInputs = useMemo(() => {
     if (!template) return [];
-    return template.sections.flatMap((s) => s.contextInputs?.filter((ci) => !ci.required) || []);
+    return [
+      ...(template.documentContextInputs?.filter((ci) => !ci.required) || []),
+      ...template.sections.flatMap((s) => s.contextInputs?.filter((ci) => !ci.required) || []),
+    ];
   }, [template]);
 
   const allowAdditionalContext = useMemo(() => {
@@ -256,25 +344,25 @@ export default function CreateDocumentPage() {
 
             <div className={styles.sidebarSectionTitle}>Document Settings</div>
 
-            <div className={styles.sectionCard}>
-              <div className={styles.sectionCardTitle}>Document Title</div>
-              <div className={styles.sectionCardText}>
-                Set the title for your generated output.
-              </div>
-              <div className={styles.fieldGroup} style={{ marginTop: "12px" }}>
-                <div>
+            {/* <div className={styles.sectionCard}> */}
+              {/* <div className={styles.sectionCardTitle}>Document Title</div> */}
+              {/* <div className={styles.sectionCardText}> */}
+                {/* Set the title for your generated output. */}
+              {/* </div> */}
+              {/* <div className={styles.fieldGroup} style={{ marginTop: "12px" }}> */}
+                {/* <div> */}
                   {/* <label className={styles.fieldLabel}>Title</label> */}
-                  <input
-                    type="text"
-                    className={styles.fieldInput}
-                    value={documentTitle}
-                    onChange={(e) => setDocumentTitle(e.target.value)}
-                    placeholder="Enter document title..."
-                    disabled={generationState === "generating"}
-                  />
-                </div>
-              </div>
-            </div>
+                  {/* <input */}
+                    {/* type="text" */}
+                    {/* className={styles.fieldInput} */}
+                    {/* value={documentTitle} */}
+                    {/* onChange={(e) => setDocumentTitle(e.target.value)} */}
+                    {/* placeholder="Enter document title..." */}
+                    {/* disabled={generationState === "generating"} */}
+                  {/* /> */}
+                {/* </div> */}
+              {/* </div> */}
+            {/* </div> */}
 
           {/* Context Inputs Button */}
           {(allRequiredInputs.length > 0 || allRecommendedInputs.length > 0 || allowAdditionalContext) && (
@@ -383,7 +471,6 @@ export default function CreateDocumentPage() {
         <div className={styles.editor}>
           <div className={styles.editorTopRow}>
             <div className={styles.editorTopTitle}>
-              <div className={styles.editorIcon} />
               <input
                 className={styles.editorTitleInput}
                 value={documentTitle}
@@ -456,43 +543,19 @@ export default function CreateDocumentPage() {
 
           {(generationState === "generating" || generationState === "completed") && (
             <div className={styles.documentContent}>
-              <div style={{
-                whiteSpace: "pre-wrap",
-                fontFamily: "'Inter', sans-serif",
-                fontSize: "15px",
-                lineHeight: "1.8",
-                color: "var(--text-primary)",
-              }}>
-                {documentContent.split("\n").map((line, idx) => {
-                  if (line.startsWith("## ")) {
-                    return (
-                      <h2
-                        key={idx}
-                        style={{
-                          fontSize: "20px",
-                          fontWeight: 700,
-                          marginTop: idx === 0 ? "0" : "32px",
-                          marginBottom: "16px",
-                          color: "var(--primary-color)",
-                        }}
-                      >
-                        {line.replace("## ", "")}
-                      </h2>
-                    );
-                  }
-                  if (line.startsWith("• ")) {
-                    return (
-                      <li key={idx} style={{ marginLeft: "20px", marginBottom: "8px" }}>
-                        {line.replace("• ", "")}
-                      </li>
-                    );
-                  }
-                  return (
-                    <p key={idx} style={{ marginBottom: "12px" }}>
-                      {line}
-                    </p>
-                  );
-                })}
+              <div className={styles.markdownContent}>
+                <ReactMarkdown
+                  remarkPlugins={[remarkGfm]}
+                  components={{
+                    a: ({ href, children, ...props }) => (
+                      <a href={href} target="_blank" rel="noreferrer noopener" {...props}>
+                        {children}
+                      </a>
+                    ),
+                  }}
+                >
+                  {documentContent}
+                </ReactMarkdown>
               </div>
             </div>
           )}
@@ -616,6 +679,46 @@ export default function CreateDocumentPage() {
                 }}
               >
                 Set Inputs
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {isDownloadModalOpen && (
+        <div className={styles.modalOverlay} onClick={() => setIsDownloadModalOpen(false)}>
+          <div
+            className={styles.modalContent}
+            onClick={(e) => e.stopPropagation()}
+            style={{ maxWidth: "460px" }}
+          >
+            <div className={styles.modalHeader}>
+              <div className={styles.modalTitle}>Download Format</div>
+              <button
+                className={styles.deleteButton}
+                onClick={() => setIsDownloadModalOpen(false)}
+                style={{ fontSize: "24px" }}
+              >
+                ×
+              </button>
+            </div>
+            <div className={styles.sectionCardText}>
+              Choose the format for export.
+            </div>
+            <div style={{ marginTop: "16px", display: "flex", flexDirection: "column", gap: "10px" }}>
+              <button className={styles.secondaryButton} onClick={() => handleDownloadFormat("md")}>
+                Markdown (.md)
+              </button>
+              <button className={styles.secondaryButton} onClick={() => handleDownloadFormat("pdf")}>
+                PDF (.pdf)
+              </button>
+              <button className={styles.secondaryButton} onClick={() => handleDownloadFormat("docx")}>
+                Word (.docx)
+              </button>
+            </div>
+            <div style={{ marginTop: "18px", display: "flex", justifyContent: "flex-end" }}>
+              <button className={styles.cancelLink} onClick={() => setIsDownloadModalOpen(false)}>
+                Cancel
               </button>
             </div>
           </div>

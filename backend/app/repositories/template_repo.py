@@ -20,6 +20,7 @@ class TemplateRepository:
         name: str,
         description: str | None,
         icon: str | None,
+        document_context_inputs_payload: list[dict] | None = None,
         sections_payload: list[dict] | None = None,
     ) -> Template:
         tpl = Template(
@@ -30,6 +31,25 @@ class TemplateRepository:
         )
         session.add(tpl)
         await session.flush()
+
+        if document_context_inputs_payload:
+            for ci in document_context_inputs_payload:
+                input_type = ContextInputType(ci["input_type"])
+                allowed_file_types = ci.get("allowed_file_types")
+                if input_type != ContextInputType.FILE:
+                    allowed_file_types = None
+
+                inp = TemplateContextInput(
+                    template_id=tpl.id,
+                    section_id=None,
+                    label=ci["label"],
+                    input_type=input_type,
+                    required=ci["required"],
+                    description=ci.get("description"),
+                    allowed_file_types=allowed_file_types,
+                    order_index=ci["order_index"],
+                )
+                session.add(inp)
 
         if sections_payload:
             for sec in sections_payload:
@@ -51,6 +71,7 @@ class TemplateRepository:
                         allowed_file_types = None
 
                     inp = TemplateContextInput(
+                        template_id=tpl.id,
                         section_id=s.id,
                         label=ci["label"],
                         input_type=input_type,
@@ -157,15 +178,22 @@ class TemplateRepository:
         sections = list(sections_res.scalars().all())
 
         section_ids = [s.id for s in sections]
-        if not section_ids:
-            return tpl, [], []
+        if section_ids:
+            inputs_stmt = (
+                select(TemplateContextInput)
+                .where(TemplateContextInput.template_id == tpl.id)
+                .where(TemplateContextInput.is_deleted.is_(False))
+                .order_by(TemplateContextInput.section_id.asc(), TemplateContextInput.order_index.asc())
+            )
+        else:
+            inputs_stmt = (
+                select(TemplateContextInput)
+                .where(TemplateContextInput.template_id == tpl.id)
+                .where(TemplateContextInput.is_deleted.is_(False))
+                .order_by(TemplateContextInput.order_index.asc())
+            )
 
-        inputs_res = await session.execute(
-            select(TemplateContextInput)
-            .where(TemplateContextInput.section_id.in_(section_ids))
-            .where(TemplateContextInput.is_deleted.is_(False))
-            .order_by(TemplateContextInput.section_id.asc(), TemplateContextInput.order_index.asc())
-        )
+        inputs_res = await session.execute(inputs_stmt)
         inputs = list(inputs_res.scalars().all())
         return tpl, sections, inputs
 
@@ -192,18 +220,12 @@ class TemplateRepository:
             .values(is_deleted=True, deleted_at=now)
         )
 
-        # soft delete inputs for those sections
-        sections_res = await session.execute(
-            select(TemplateSection.id).where(TemplateSection.template_id == tpl.id)
+        await session.execute(
+            update(TemplateContextInput)
+            .where(TemplateContextInput.template_id == tpl.id)
+            .where(TemplateContextInput.is_deleted.is_(False))
+            .values(is_deleted=True, deleted_at=now)
         )
-        section_ids = list(sections_res.scalars().all())
-        if section_ids:
-            await session.execute(
-                update(TemplateContextInput)
-                .where(TemplateContextInput.section_id.in_(section_ids))
-                .where(TemplateContextInput.is_deleted.is_(False))
-                .values(is_deleted=True, deleted_at=now)
-            )
 
         return True
 
@@ -216,6 +238,7 @@ class TemplateRepository:
         name: str,
         description: str | None,
         icon: str | None,
+        document_context_inputs_payload: list[dict] | None,
         sections_payload: list[dict],
     ) -> Template:
         tpl = await self.get_by_id_scoped(session, template_id=template_id, workspace_id=workspace_id)
@@ -231,15 +254,32 @@ class TemplateRepository:
         existing_full = await self.get_full_scoped(session, template_id=template_id, workspace_id=workspace_id)
         _, existing_sections, existing_inputs = existing_full or (tpl, [], [])
 
+        if existing_inputs:
+            await session.execute(delete(TemplateContextInput).where(TemplateContextInput.template_id == tpl.id))
         if existing_sections:
             section_ids = [s.id for s in existing_sections]
-            if existing_inputs:
-                await session.execute(
-                    delete(TemplateContextInput).where(TemplateContextInput.section_id.in_(section_ids))
-                )
             await session.execute(delete(TemplateSection).where(TemplateSection.id.in_(section_ids)))
 
-        # insert new sections + inputs
+        # insert new document-level context inputs
+        for ci in (document_context_inputs_payload or []):
+            allowed_file_types = ci.get("allowed_file_types")
+            input_type = ContextInputType(ci["input_type"])
+            if input_type != ContextInputType.FILE:
+                allowed_file_types = None
+
+            inp = TemplateContextInput(
+                template_id=tpl.id,
+                section_id=None,
+                label=ci["label"],
+                input_type=input_type,
+                required=ci["required"],
+                description=ci.get("description"),
+                allowed_file_types=allowed_file_types,
+                order_index=ci["order_index"],
+            )
+            session.add(inp)
+
+        # insert new sections + section-level context inputs
         for sec in sections_payload:
             s = TemplateSection(
                 template_id=tpl.id,
@@ -259,6 +299,7 @@ class TemplateRepository:
                     allowed_file_types = None
 
                 inp = TemplateContextInput(
+                    template_id=tpl.id,
                     section_id=s.id,
                     label=ci["label"],
                     input_type=input_type,
@@ -323,8 +364,25 @@ class TemplateRepository:
         await session.flush()
 
         input_by_section: dict[uuid.UUID, list[TemplateContextInput]] = {}
+        document_inputs: list[TemplateContextInput] = []
         for ci in inputs:
-            input_by_section.setdefault(ci.section_id, []).append(ci)
+            if ci.section_id is None:
+                document_inputs.append(ci)
+            else:
+                input_by_section.setdefault(ci.section_id, []).append(ci)
+
+        for ci in sorted(document_inputs, key=lambda x: x.order_index):
+            new_inp = TemplateContextInput(
+                template_id=new_tpl.id,
+                section_id=None,
+                label=ci.label,
+                input_type=ci.input_type,
+                required=ci.required,
+                description=ci.description,
+                allowed_file_types=ci.allowed_file_types,
+                order_index=ci.order_index,
+            )
+            session.add(new_inp)
 
         for sec in sections:
             new_sec = TemplateSection(
@@ -340,6 +398,7 @@ class TemplateRepository:
 
             for ci in input_by_section.get(sec.id, []):
                 new_inp = TemplateContextInput(
+                    template_id=new_tpl.id,
                     section_id=new_sec.id,
                     label=ci.label,
                     input_type=ci.input_type,

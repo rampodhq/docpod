@@ -17,17 +17,19 @@
 .icon {
   width: 64px;
   height: 64px;
-  background: var(--ui-neutral-bg);
+  background: var(--primary-color);
   border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--primary-color);
+  color: var(--bg-white);
+  box-shadow: var(--shadow-primary-md);
 }
 
 .iconSvg {
   width: 30px;
   height: 30px;
+  color: var(--bg-white);
 }
 
 .title {

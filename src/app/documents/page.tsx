@@ -1,5 +1,6 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { useState, useRef, useEffect } from "react";
 import { Input } from "@/shared/ui";
 import { Search } from "lucide-react";
@@ -16,9 +17,12 @@ const iconToneClass: Record<string, string> = {
 };
 
 export default function DocumentsPage() {
+  const router = useRouter();
   const {
     documents,
     totalCount,
+    isLoading,
+    errorMessage,
     query,
     setQuery,
     deleteDocument,
@@ -90,7 +94,18 @@ export default function DocumentsPage() {
 
           <div className={styles.cardBodyWrapper}>
             <div className={styles.cardBody}>
-              {documents.length === 0 ? (
+              {isLoading ? (
+                <div className={styles.emptyState}>
+                  <div className={styles.emptyIcon}>⏳</div>
+                  <p className={styles.emptyText}>Loading documents...</p>
+                </div>
+              ) : errorMessage ? (
+                <div className={styles.emptyState}>
+                  <div className={styles.emptyIcon}>⚠️</div>
+                  <p className={styles.emptyText}>Could not load documents.</p>
+                  <p className={styles.emptySubtext}>{errorMessage}</p>
+                </div>
+              ) : documents.length === 0 ? (
                 <div className={styles.emptyState}>
                   <div className={styles.emptyIcon}>📄</div>
                   <p className={styles.emptyText}>No documents found.</p>
@@ -107,6 +122,15 @@ export default function DocumentsPage() {
                     <div
                       className={styles.row}
                       key={doc.id}
+                      role="button"
+                      tabIndex={0}
+                      onClick={() => router.push(`/documents/${doc.id}`)}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter" || e.key === " ") {
+                          e.preventDefault();
+                          router.push(`/documents/${doc.id}`);
+                        }
+                      }}
                     >
                       <div className={styles.rowLeft}>
                         <div
@@ -147,6 +171,7 @@ export default function DocumentsPage() {
                       <div
                         className={styles.rowRight}
                         ref={menuRef}
+                        onClick={(e) => e.stopPropagation()}
                       >
                         <button
                           className={

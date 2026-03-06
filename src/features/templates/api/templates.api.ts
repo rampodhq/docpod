@@ -30,6 +30,7 @@ export type ApiTemplateRead = {
   is_active: boolean;
   created_at: string;
   updated_at: string;
+  document_context_inputs: ApiTemplateContextInput[];
   sections: ApiTemplateSection[];
 };
 
@@ -61,6 +62,14 @@ type CreateTemplatePayload = {
   name?: string;
   description?: string;
   icon?: string;
+  document_context_inputs?: Array<{
+    label: string;
+    input_type: string;
+    required: boolean;
+    description?: string;
+    allowed_file_types?: string[];
+    order_index: number;
+  }>;
   sections?: Array<{
     title: string;
     order_index: number;
@@ -83,6 +92,7 @@ type UpdateTemplatePayload = {
   name: string;
   description?: string;
   icon?: string;
+  document_context_inputs?: CreateTemplatePayload["document_context_inputs"];
   sections: CreateTemplatePayload["sections"];
 };
 

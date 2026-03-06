@@ -85,20 +85,22 @@
   display: grid;
   place-items: center;
   flex-shrink: 0;
-  border: 1px solid rgba(255, 255, 255, 0.8);
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.4);
+  color: var(--bg-white);
+  border: 1px solid color-mix(in srgb, var(--primary-color) 32%, white 68%);
+  box-shadow: var(--shadow-primary-sm);
+  background: var(--primary-color);
 }
 
 .docIconPeach {
-  background: var(--tone-peach);
+  background: var(--primary-color);
 }
 
 .docIconSage {
-  background: var(--tone-sage);
+  background: var(--primary-color);
 }
 
 .docIconSand {
-  background: var(--tone-sand);
+  background: var(--primary-color);
 }
 
 .docInfo {

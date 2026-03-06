@@ -1,23 +1,30 @@
 "use client";
 
-import { useState } from "react";
-import { Upload, Link as LinkIcon, Type, Plus, Trash2, Edit2, Check } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Upload, Link as LinkIcon, Type, Plus, Check } from "lucide-react";
 import type { ContextInput, ContextInputType } from "@/features/templates/data/templates.management.data";
 import styles from "./builder.module.css";
 
 interface ContextInputsManagerProps {
   contextInputs: ContextInput[];
   allowAdditionalContext?: boolean;
+  showAdditionalToggle?: boolean;
+  showItemIcons?: boolean;
+  showDescriptionInList?: boolean;
   onUpdate: (inputs: ContextInput[], allowAdditional: boolean) => void;
 }
 
 export const ContextInputsManager = ({
   contextInputs = [],
   allowAdditionalContext = true,
+  showAdditionalToggle = true,
+  showItemIcons = true,
+  showDescriptionInList = true,
   onUpdate,
 }: ContextInputsManagerProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingInput, setEditingInput] = useState<ContextInput | null>(null);
+  const [openMenuId, setOpenMenuId] = useState<string | null>(null);
   const [formData, setFormData] = useState<Partial<ContextInput>>({
     label: "",
     description: "",
@@ -69,6 +76,19 @@ export const ContextInputsManager = ({
     setIsModalOpen(false);
     setEditingInput(null);
   };
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as HTMLElement | null;
+      const clickedInsideMenu = target?.closest('[data-context-menu="true"]');
+      if (!clickedInsideMenu) {
+        setOpenMenuId(null);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   const handleSave = () => {
     if (!formData.label) return;
@@ -128,10 +148,15 @@ export const ContextInputsManager = ({
         ) : (
           <div className={styles.contextInputsList}>
             {contextInputs.map((input) => (
-              <div key={input.id} className={styles.contextInputItem}>
+              <div
+                key={input.id}
+                className={`${styles.contextInputItem} ${!showItemIcons && !showDescriptionInList ? styles.contextInputItemCompact : ""}`}
+              >
                 <div className={styles.contextInputHeader}>
                   <div className={styles.contextInputLabelRow}>
-                    <div className={styles.contextInputIcon}>{getIconForType(input.type)}</div>
+                    {showItemIcons && (
+                      <div className={styles.contextInputIcon}>{getIconForType(input.type)}</div>
+                    )}
                     <div className={styles.contextInputInfo}>
                       <div className={styles.contextInputLabel}>
                         {input.label}
@@ -139,7 +164,7 @@ export const ContextInputsManager = ({
                           <span className={styles.contextInputBadge}>Required</span>
                         )}
                       </div>
-                      {input.description && (
+                      {showDescriptionInList && input.description && (
                         <div className={styles.contextInputDescription}>{input.description}</div>
                       )}
                       <div className={styles.contextInputFileTypes}>
@@ -151,22 +176,47 @@ export const ContextInputsManager = ({
                     </div>
                   </div>
                   <div className={styles.contextInputActions}>
-                    <button
-                      className={styles.contextInputActionBtn}
-                      onClick={() => openModal(input)}
-                      type="button"
-                      title="Edit"
-                    >
-                      <Edit2 size={16} />
-                    </button>
-                    <button
-                      className={styles.contextInputActionBtn}
-                      onClick={() => handleDelete(input.id)}
-                      type="button"
-                      title="Delete"
-                    >
-                      <Trash2 size={16} />
-                    </button>
+                    <div className={styles.contextInputMenuWrap} data-context-menu="true">
+                      <button
+                        className={styles.contextInputActionBtn}
+                        onClick={() =>
+                          setOpenMenuId((prev) => (prev === input.id ? null : input.id))
+                        }
+                        type="button"
+                        title="Actions"
+                        aria-haspopup="menu"
+                        aria-expanded={openMenuId === input.id}
+                      >
+                        <span className={styles.contextInputKebab}>⋯</span>
+                      </button>
+
+                      {openMenuId === input.id && (
+                        <div className={styles.contextInputMenu} role="menu">
+                          <button
+                            className={styles.contextInputMenuItem}
+                            onClick={() => {
+                              openModal(input);
+                              setOpenMenuId(null);
+                            }}
+                            type="button"
+                            role="menuitem"
+                          >
+                            Edit
+                          </button>
+                          <button
+                            className={`${styles.contextInputMenuItem} ${styles.contextInputMenuItemDanger}`}
+                            onClick={() => {
+                              handleDelete(input.id);
+                              setOpenMenuId(null);
+                            }}
+                            type="button"
+                            role="menuitem"
+                          >
+                            Delete
+                          </button>
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
               </div>
@@ -174,18 +224,20 @@ export const ContextInputsManager = ({
           </div>
         )}
 
-        <div className={styles.contextToggleSection}>
-          <input
-            type="checkbox"
-            id="allowAdditional"
-            checked={allowAdditionalContext}
-            onChange={toggleAllowAdditional}
-            className={styles.contextInputFormCheckboxInput}
-          />
-          <label htmlFor="allowAdditional" className={styles.contextToggleText}>
-            Allow users to add additional context during generation
-          </label>
-        </div>
+        {showAdditionalToggle && (
+          <div className={styles.contextToggleSection}>
+            <input
+              type="checkbox"
+              id="allowAdditional"
+              checked={allowAdditionalContext}
+              onChange={toggleAllowAdditional}
+              className={styles.contextInputFormCheckboxInput}
+            />
+            <label htmlFor="allowAdditional" className={styles.contextToggleText}>
+              Allow users to add additional context during generation
+            </label>
+          </div>
+        )}
       </div>
 
       {isModalOpen && (

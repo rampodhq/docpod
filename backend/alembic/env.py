@@ -17,6 +17,11 @@ from app.models.membership import WorkspaceMembership  # noqa: F401
 from app.models.template import Template  # noqa: F401
 from app.models.template_section import TemplateSection  # noqa: F401
 from app.models.template_context_input import TemplateContextInput  # noqa: F401
+from app.models.document import Document  # noqa: F401
+from app.models.generation_job import GenerationJob  # noqa: F401
+from app.models.generation_event import GenerationEvent  # noqa: F401
+from app.models.document_artifact import DocumentArtifact  # noqa: F401
+from app.models.contact_submission import ContactSubmission  # noqa: F401
 
 config = context.config
 fileConfig(config.config_file_name)

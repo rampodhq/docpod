@@ -71,6 +71,20 @@ def _normalize_sections_payload(sections: list[Any]) -> list[dict]:
     return normalized
 
 
+def _normalize_context_inputs_payload(inputs: list[Any]) -> list[dict]:
+    return [
+        {
+            "label": ci.label,
+            "input_type": _normalize_input_type(ci.input_type.value if hasattr(ci.input_type, "value") else ci.input_type),
+            "required": ci.required,
+            "description": ci.description,
+            "allowed_file_types": ci.allowed_file_types,
+            "order_index": ci.order_index,
+        }
+        for ci in inputs
+    ]
+
+
 @router.get("", response_model=TemplateListResponse)
 async def list_templates(
     session: AsyncSession = Depends(get_db_session),
@@ -103,6 +117,7 @@ async def create_template(
 ) -> TemplateRead:
     svc = TemplateService(TemplateRepository())
     sections_payload = _normalize_sections_payload(payload.sections)
+    document_context_inputs = _normalize_context_inputs_payload(payload.document_context_inputs)
     try:
         return await svc.create_default(
             session,
@@ -110,6 +125,7 @@ async def create_template(
             name=payload.name,
             description=payload.description,
             icon=payload.icon,
+            document_context_inputs=document_context_inputs,
             sections=sections_payload,
         )
     except ValueError as e:
@@ -214,6 +230,7 @@ async def update_template(
                 "name": payload.name,
                 "description": payload.description,
                 "icon": payload.icon,
+                "document_context_inputs": _normalize_context_inputs_payload(payload.document_context_inputs),
                 "sections": _normalize_sections_payload(payload.sections),
             },
         )

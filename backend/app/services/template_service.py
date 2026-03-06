@@ -30,6 +30,7 @@ class TemplateService:
         name: str | None,
         description: str | None,
         icon: str | None,
+        document_context_inputs: list[dict] | None = None,
         sections: list[dict] | None = None,
     ) -> TemplateRead:
         self._validate_icon(icon)
@@ -39,6 +40,7 @@ class TemplateService:
             name=name or "Untitled Template",
             description=description,
             icon=icon,
+            document_context_inputs_payload=document_context_inputs,
             sections_payload=sections,
         )
         await session.commit()
@@ -74,6 +76,7 @@ class TemplateService:
             name=payload["name"],
             description=payload.get("description"),
             icon=payload.get("icon"),
+            document_context_inputs_payload=payload.get("document_context_inputs") or [],
             sections_payload=payload["sections"],
         )
         await session.commit()
@@ -177,8 +180,12 @@ class TemplateService:
 
     def _to_read(self, tpl, sections, inputs) -> TemplateRead:
         inputs_by_section = defaultdict(list)
+        document_context_inputs = []
         for i in inputs:
-            inputs_by_section[i.section_id].append(i)
+            if i.section_id is None:
+                document_context_inputs.append(i)
+            else:
+                inputs_by_section[i.section_id].append(i)
 
         section_reads = []
         for s in sections:
@@ -217,6 +224,18 @@ class TemplateService:
                 "is_active": tpl.is_active,
                 "created_at": tpl.created_at,
                 "updated_at": tpl.updated_at,
+                "document_context_inputs": [
+                    {
+                        "id": ci.id,
+                        "label": ci.label,
+                        "input_type": ci.input_type.value,
+                        "required": ci.required,
+                        "description": ci.description,
+                        "allowed_file_types": ci.allowed_file_types,
+                        "order_index": ci.order_index,
+                    }
+                    for ci in sorted(document_context_inputs, key=lambda x: x.order_index)
+                ],
                 "sections": section_reads,
             }
         )

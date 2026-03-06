@@ -1,8 +1,7 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import styles from './settings.module.css';
-import { THEME_PRESETS, applyPresetTheme } from '@/shared/lib/theme';
 
 
 export default function SettingsPage() {
@@ -10,21 +9,6 @@ export default function SettingsPage() {
   const [theme, setTheme] = useState('Executive');
   const [exportFormat, setExportFormat] = useState('DOCX');
   const [isSaving, setIsSaving] = useState(false);
-  const [selectedTheme, setSelectedTheme] = useState('peach');
-
-  useEffect(() => {
-    // Load saved theme from localStorage
-    const savedTheme = localStorage.getItem('docpod-theme-preset');
-    if (savedTheme && THEME_PRESETS[savedTheme]) {
-      setSelectedTheme(savedTheme);
-    }
-  }, []);
-
-  const handleThemeChange = (themeKey: string) => {
-    setSelectedTheme(themeKey);
-    applyPresetTheme(themeKey as keyof typeof THEME_PRESETS);
-    localStorage.setItem('docpod-theme-preset', themeKey);
-  };
 
   const handleSave = () => {
     setIsSaving(true);
@@ -169,43 +153,6 @@ export default function SettingsPage() {
                 </>
               )}
             </button>
-          </div>
-        </section>
-
-        <section className={styles.card}>
-          <div className={styles.cardHeader}>
-            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" className={styles.headerIcon}>
-              <path d="M10 2C5.58 2 2 5.58 2 10C2 14.42 5.58 18 10 18C14.42 18 18 14.42 18 10C18 5.58 14.42 2 10 2ZM10 16C6.69 16 4 13.31 4 10C4 6.69 6.69 4 10 4C13.31 4 16 6.69 16 10C16 13.31 13.31 16 10 16ZM14 10C14 12.21 12.21 14 10 14C7.79 14 6 12.21 6 10C6 7.79 7.79 6 10 6C12.21 6 14 7.79 14 10Z" fill="currentColor"/>
-            </svg>
-            <span>Theme Color</span>
-          </div>
-          <div className={styles.row}>
-            <span className={styles.rowLabel}>
-              <svg width="18" height="18" viewBox="0 0 20 20" fill="none" className={styles.labelIcon}>
-                <path d="M10 2C5.58 2 2 5.58 2 10C2 14.42 5.58 18 10 18C14.42 18 18 14.42 18 10C18 5.58 14.42 2 10 2ZM10 16C6.69 16 4 13.31 4 10C4 6.69 6.69 4 10 4C13.31 4 16 6.69 16 10C16 13.31 13.31 16 10 16Z" fill="currentColor"/>
-              </svg>
-              Primary Color
-            </span>
-            <div className={styles.themeColorGrid}>
-              {Object.entries(THEME_PRESETS).map(([key, themePreset]) => (
-                <button
-                  key={key}
-                  className={`${styles.themeColorOption} ${selectedTheme === key ? styles.themeColorActive : ''}`}
-                  onClick={() => handleThemeChange(key)}
-                  style={{ backgroundColor: themePreset.primary }}
-                  title={themePreset.name}
-                >
-                  {selectedTheme === key && (
-                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                      <path d="M15.8333 5.34175L7.08333 14.0917L3.75 10.7584L2.575 11.9334L7.08333 16.4417L17.0083 6.51675L15.8333 5.34175Z" fill="white" stroke="white" strokeWidth="1"/>
-                    </svg>
-                  )}
-                </button>
-              ))}
-            </div>
-          </div>
-          <div className={styles.themePreview}>
-            <div className={styles.previewLabel}>Selected: {THEME_PRESETS[selectedTheme as keyof typeof THEME_PRESETS]?.name}</div>
           </div>
         </section>
       </main>

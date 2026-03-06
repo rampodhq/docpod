@@ -22,7 +22,10 @@ class TemplateContextInput(Base):
 
     id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
 
-    section_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), ForeignKey("template_sections.id"), nullable=False)
+    template_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), ForeignKey("templates.id"), nullable=False)
+    section_id: Mapped[uuid.UUID | None] = mapped_column(
+        UUID(as_uuid=True), ForeignKey("template_sections.id"), nullable=True
+    )
 
     label: Mapped[str] = mapped_column(String(255), nullable=False)
     input_type: Mapped[ContextInputType] = mapped_column(Enum(ContextInputType, name="context_input_type"), nullable=False)

@@ -20,7 +20,7 @@
 
 .pageTitle {
   font-size: 1.1rem;
-  color: #7b6e69;
+  color: var(--text-muted);
   font-weight: 600;
 }
 
@@ -68,7 +68,7 @@
   background: transparent;
   font-size: 0.95rem;
   width: 100%;
-  color: #514844;
+  color: var(--text-primary);
 }
 
 .cardPanel {
@@ -94,7 +94,7 @@
 
 .panelTabActive {
   font-weight: 600;
-  color: #514844;
+  color: var(--text-primary);
 }
 
 .panelTabCount {
@@ -148,7 +148,7 @@
 .card:hover {
   transform: translateY(-4px);
   box-shadow: 0 12px 24px rgba(0, 0, 0, 0.08);
-  border-color: #d6b8a9; /* subtle brand tint */
+  border-color: var(--border-accent); /* subtle brand tint */
 }
 .cardHeader {
   display: flex;
@@ -160,29 +160,31 @@
   width: 32px;
   height: 32px;
   border-radius: 10px;
-  background: var(--ui-placeholder-bg);
+  background: var(--primary-color);
   flex-shrink: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--primary-color);
+  color: var(--bg-white);
+  box-shadow: var(--shadow-primary-md);
 }
 
 .cardIconSvg {
   width: 18px;
   height: 18px;
+  color: var(--bg-white);
 }
 
 .peach {
-  background: var(--ui-placeholder-bg);
+  background: var(--primary-color);
 }
 
 .blue {
-  background: #d8eaf1;
+  background: var(--primary-color);
 }
 
 .sage {
-  background: var(--tone-sage);
+  background: var(--primary-color);
 }
 
 .cardTitle {
@@ -201,7 +203,7 @@
   border: none;
   background: transparent;
   font-size: 1.1rem;
-  color: #b7a8a2;
+  color: var(--text-lighter);
   cursor: pointer;
 }
 
@@ -237,15 +239,17 @@
 .createCard:hover {
   transform: translateY(-4px);
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.06);
-  border-color: #d6b8a9;
+  border-color: var(--border-accent);
 }
 
 .createIcon {
   width: 44px;
   height: 44px;
   border-radius: 50%;
-  border: 2px solid var(--primary-color);
-  color: var(--primary-color);
+  border: 1px solid color-mix(in srgb, var(--primary-color) 82%, white 18%);
+  background: var(--primary-color);
+  color: var(--bg-white);
+  box-shadow: var(--shadow-primary-md);
   display: flex;
   align-items: center;
   justify-content: center;

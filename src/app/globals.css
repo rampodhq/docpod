@@ -8,8 +8,8 @@ html {
 }
 
 :root {
-  --background: #f7e8df;
-  --foreground: #2f211c;
+  --background: var(--bg-primary);
+  --foreground: var(--text-primary);
 }
 
 @theme inline {
@@ -20,7 +20,7 @@ html {
 }
 
 body {
-  background: var(--background);
+  background: transparent;
   color: var(--foreground);
   font-family: "Poppins", sans-serif;
   min-height: 100%;
@@ -36,31 +36,45 @@ body::after {
   position: fixed;
   inset: -20%;
   pointer-events: none;
-  z-index: -2;
+  z-index: 0;
 }
 
 body::before {
   background:
     radial-gradient(120% 100% at 12% 8%, rgba(255, 255, 255, 0.8) 0%, rgba(255, 255, 255, 0) 62%),
-    radial-gradient(90% 80% at 88% 18%, rgba(244, 180, 155, 0.4) 0%, rgba(244, 180, 155, 0) 68%),
-    linear-gradient(126deg, #f9efe8 0%, #f5e4db 46%, #e8d2c8 100%);
+    radial-gradient(
+      90% 80% at 88% 18%,
+      color-mix(in srgb, var(--primary-color) 30%, transparent) 0%,
+      transparent 68%
+    ),
+    linear-gradient(
+      126deg,
+      var(--bg-gradient-start) 0%,
+      var(--bg-gradient-mid) 46%,
+      var(--bg-gradient-end) 100%
+    );
   filter: saturate(108%);
   animation: appSatinDrift 20s ease-in-out infinite alternate;
 }
 
 body::after {
-  z-index: -1;
+  z-index: 0;
   background:
     repeating-linear-gradient(
       -34deg,
-      rgba(255, 255, 255, 0.24) 0,
-      rgba(255, 255, 255, 0.24) 34px,
-      rgba(227, 179, 158, 0.12) 34px,
-      rgba(227, 179, 158, 0.12) 68px
+      color-mix(in srgb, white 24%, transparent) 0,
+      color-mix(in srgb, white 24%, transparent) 34px,
+      color-mix(in srgb, var(--primary-color) 12%, transparent) 34px,
+      color-mix(in srgb, var(--primary-color) 12%, transparent) 68px
     );
   filter: blur(18px);
   opacity: 0.45;
   animation: appSatinWave 24s ease-in-out infinite;
+}
+
+body > * {
+  position: relative;
+  z-index: 1;
 }
 
 @keyframes appSatinDrift {

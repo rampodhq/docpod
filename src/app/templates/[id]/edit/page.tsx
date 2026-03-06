@@ -79,28 +79,50 @@ function generateLoremIpsum(style: SectionStyle): string {
   }
 }
 
-function applyStylePreview(style: SectionStyle, loremText: string): ReactElement {
+function applyStylePreview(
+  style: SectionStyle,
+  loremText: string,
+): ReactElement {
   if (style === "bulleted") {
     return (
       <ul style={{ paddingLeft: 18, marginTop: 8, marginBottom: 8 }}>
-        {loremText.split("\n").filter(Boolean).map((line, idx) => (
-          <li key={idx} style={{ marginBottom: 4 }}>{line}</li>
-        ))}
+        {loremText
+          .split("\n")
+          .filter(Boolean)
+          .map((line, idx) => (
+            <li key={idx} style={{ marginBottom: 4 }}>
+              {line}
+            </li>
+          ))}
       </ul>
     );
   }
   if (style === "numbered") {
     return (
       <ol style={{ paddingLeft: 18, marginTop: 8, marginBottom: 8 }}>
-        {loremText.split("\n").filter(Boolean).map((line, idx) => (
-          <li key={idx} style={{ marginBottom: 4 }}>{line}</li>
-        ))}
+        {loremText
+          .split("\n")
+          .filter(Boolean)
+          .map((line, idx) => (
+            <li key={idx} style={{ marginBottom: 4 }}>
+              {line}
+            </li>
+          ))}
       </ol>
     );
   }
   if (style === "quote") {
     return (
-      <div style={{ marginTop: 8, marginBottom: 8, padding: 12, borderLeft: "4px solid #f38a73", background: "#fff9f7", borderRadius: 12 }}>
+      <div
+        style={{
+          marginTop: 8,
+          marginBottom: 8,
+          padding: 12,
+          borderLeft: "4px solid var(--primary-color)",
+          background: "var(--bg-subtle)",
+          borderRadius: 12,
+        }}
+      >
         {loremText}
       </div>
     );
@@ -108,16 +130,43 @@ function applyStylePreview(style: SectionStyle, loremText: string): ReactElement
   if (style === "table") {
     const rows = loremText.split("\n").filter(Boolean);
     return (
-      <div style={{ marginTop: 8, marginBottom: 8, border: "1px solid #f1d9d1", borderRadius: 12, overflow: "hidden" }}>
+      <div
+        style={{
+          marginTop: 8,
+          marginBottom: 8,
+          border: "1px solid var(--border-light)",
+          borderRadius: 12,
+          overflow: "hidden",
+        }}
+      >
         {rows.map((row, idx) => (
-          <div key={idx} style={{ padding: 10, background: idx === 0 ? "#fff5f1" : "#fff", fontWeight: idx === 0 ? 600 : 400, borderTop: idx > 0 ? "1px solid #f1d9d1" : "none" }}>
+          <div
+            key={idx}
+            style={{
+              padding: 10,
+              background: idx === 0 ? "var(--primary-lighter)" : "#fff",
+              fontWeight: idx === 0 ? 600 : 400,
+              borderTop: idx > 0 ? "1px solid var(--border-light)" : "none",
+            }}
+          >
             {row}
           </div>
         ))}
       </div>
     );
   }
-  return <div style={{ marginTop: 8, marginBottom: 8, color: "#5b514d", lineHeight: 1.6 }}>{loremText}</div>;
+  return (
+    <div
+      style={{
+        marginTop: 8,
+        marginBottom: 8,
+        color: "var(--text-secondary)",
+        lineHeight: 1.6,
+      }}
+    >
+      {loremText}
+    </div>
+  );
 }
 
 function SortableOutlineItem(props: {
@@ -162,9 +211,9 @@ function SortableOutlineItem(props: {
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter') {
+    if (e.key === "Enter") {
       handleBlur();
-    } else if (e.key === 'Escape') {
+    } else if (e.key === "Escape") {
       setIsEditing(false);
       setEditValue(section.title);
     }
@@ -177,7 +226,6 @@ function SortableOutlineItem(props: {
       className={`${styles.outlineItem} ${active ? styles.outlineItemActive : ""}`}
       onClick={onSelect}
     >
-
       {isEditing ? (
         <input
           className={styles.outlineTitleInput}
@@ -189,10 +237,10 @@ function SortableOutlineItem(props: {
           autoFocus
         />
       ) : (
-        <span 
+        <span
           className={styles.outlineTitleInput}
           onDoubleClick={handleDoubleClick}
-          style={{ cursor: 'text' }}
+          style={{ cursor: "text" }}
         >
           {section.title}
         </span>
@@ -206,14 +254,14 @@ function SortableOutlineItem(props: {
         }}
         title="Delete section"
         type="button"
-        style={{ 
-          marginLeft: 'auto',
-          border: 'none',
-          background: 'transparent',
-          color: '#c4aba2',
-          cursor: 'pointer',
-          fontSize: '16px',
-          padding: '4px 8px'
+        style={{
+          marginLeft: "auto",
+          border: "none",
+          background: "transparent",
+          color: "var(--text-lighter)",
+          cursor: "pointer",
+          fontSize: "16px",
+          padding: "4px 8px",
         }}
       >
         ✕
@@ -238,6 +286,9 @@ export default function TemplateEditPage() {
   const [templateId, setTemplateId] = useState<string>(id ?? "");
   const [templateTitle, setTemplateTitle] = useState("");
   const [templateSubtitle, setTemplateSubtitle] = useState("");
+  const [documentContextInputs, setDocumentContextInputs] = useState<
+    ContextInput[]
+  >([]);
   const [sections, setSections] = useState<Section[]>([]);
   const [isLoadingTemplate, setIsLoadingTemplate] = useState(true);
 
@@ -248,12 +299,13 @@ export default function TemplateEditPage() {
   const [isEditingSubtitle, setIsEditingSubtitle] = useState(false);
   const [editTitleValue, setEditTitleValue] = useState("");
   const [editSubtitleValue, setEditSubtitleValue] = useState("");
-  const [selectedIcon, setSelectedIcon] = useState<TemplateIconKey>("DocumentText");
+  const [selectedIcon, setSelectedIcon] =
+    useState<TemplateIconKey>("DocumentText");
   const [isIconPickerOpen, setIsIconPickerOpen] = useState(false);
 
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 6 } }),
-    useSensor(KeyboardSensor)
+    useSensor(KeyboardSensor),
   );
 
   useEffect(() => {
@@ -269,13 +321,20 @@ export default function TemplateEditPage() {
         setTemplateId(mapped.id);
         setTemplateTitle(mapped.title);
         setTemplateSubtitle(mapped.subtitle);
+        setDocumentContextInputs(mapped.documentContextInputs ?? []);
         setSections(
           (mapped.sections ?? []).map((s) => ({
             ...s,
-            styles: s.styles && s.styles.length > 0 ? s.styles : [s.style ?? "paragraph"],
-          })) as Section[]
+            styles:
+              s.styles && s.styles.length > 0
+                ? s.styles
+                : [s.style ?? "paragraph"],
+          })) as Section[],
         );
-        if (mapped.icon && TEMPLATE_ICON_KEYS.includes(mapped.icon as TemplateIconKey)) {
+        if (
+          mapped.icon &&
+          TEMPLATE_ICON_KEYS.includes(mapped.icon as TemplateIconKey)
+        ) {
           setSelectedIcon(mapped.icon as TemplateIconKey);
         }
       } catch {
@@ -296,11 +355,7 @@ export default function TemplateEditPage() {
   }, [id]);
 
   if (isLoadingTemplate) {
-    return (
-      <div style={{ padding: 40 }}>
-        Loading template...
-      </div>
-    );
+    return <div style={{ padding: 40 }}>Loading template...</div>;
   }
 
   if (!templateId) {
@@ -308,14 +363,16 @@ export default function TemplateEditPage() {
       <div style={{ padding: 40 }}>
         Template not found.
         <div style={{ marginTop: 12 }}>
-          <button onClick={() => router.push("/templates")}>Back to Templates</button>
+          <button onClick={() => router.push("/templates")}>
+            Back to Templates
+          </button>
         </div>
       </div>
     );
   }
 
   const IconComp = TEMPLATE_ICONS[selectedIcon];
-  
+
   const activeSection = sections[activeIndex] ?? null;
 
   const handleDragEnd = (event: DragEndEvent) => {
@@ -365,21 +422,21 @@ export default function TemplateEditPage() {
     if (!activeSection) return;
     const updated = [...sections];
     const currentStyles = updated[activeIndex].styles || [];
-    
+
     if (currentStyles.includes(style)) {
       // Remove style if already selected
-      updated[activeIndex] = { 
-        ...activeSection, 
-        styles: currentStyles.filter(s => s !== style)
+      updated[activeIndex] = {
+        ...activeSection,
+        styles: currentStyles.filter((s) => s !== style),
       };
     } else {
       // Add style
-      updated[activeIndex] = { 
-        ...activeSection, 
-        styles: [...currentStyles, style]
+      updated[activeIndex] = {
+        ...activeSection,
+        styles: [...currentStyles, style],
       };
     }
-    
+
     setSections(updated);
   };
 
@@ -410,20 +467,35 @@ export default function TemplateEditPage() {
       name: templateTitle.trim() || "Untitled Template",
       description: templateSubtitle.trim() || "",
       icon: selectedIcon,
-      sections: sections.map((section, sectionIdx) => ({
-        title: section.title,
-        order_index: sectionIdx + 1,
-        content_instructions: section.content,
-        allowed_styles: (section.styles?.length ? section.styles : ["paragraph" as SectionStyle]).map(mapStyleToBackend),
-        allow_additional_context: section.allowAdditionalContext ?? true,
-        context_inputs: (section.contextInputs ?? []).map((input, inputIdx) => ({
+      document_context_inputs: (documentContextInputs ?? []).map(
+        (input, inputIdx) => ({
           label: input.label,
           input_type: mapInputTypeToBackend(input.type),
           required: input.required,
           description: input.description,
           allowed_file_types: input.acceptedFileTypes,
           order_index: inputIdx + 1,
-        })),
+        }),
+      ),
+      sections: sections.map((section, sectionIdx) => ({
+        title: section.title,
+        order_index: sectionIdx + 1,
+        content_instructions: section.content,
+        allowed_styles: (section.styles?.length
+          ? section.styles
+          : ["paragraph" as SectionStyle]
+        ).map(mapStyleToBackend),
+        allow_additional_context: section.allowAdditionalContext ?? true,
+        context_inputs: (section.contextInputs ?? []).map(
+          (input, inputIdx) => ({
+            label: input.label,
+            input_type: mapInputTypeToBackend(input.type),
+            required: input.required,
+            description: input.description,
+            allowed_file_types: input.acceptedFileTypes,
+            order_index: inputIdx + 1,
+          }),
+        ),
       })),
     };
 
@@ -463,16 +535,31 @@ export default function TemplateEditPage() {
     <>
       {/* Full document preview modal */}
       {isFullPreviewOpen && (
-        <div className={styles.modalOverlay} onClick={() => setIsFullPreviewOpen(false)}>
-          <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
+        <div
+          className={styles.modalOverlay}
+          onClick={() => setIsFullPreviewOpen(false)}
+        >
+          <div
+            className={styles.modalContent}
+            onClick={(e) => e.stopPropagation()}
+          >
             <div className={styles.modalHeader}>
               <div className={styles.modalTitle}>Full Document Preview</div>
-              <button className={styles.previewButton} onClick={() => setIsFullPreviewOpen(false)}>
+              <button
+                className={styles.previewButton}
+                onClick={() => setIsFullPreviewOpen(false)}
+              >
                 Close
               </button>
             </div>
 
-            <div style={{ maxHeight: 'calc(86vh - 80px)', overflowY: 'auto', paddingRight: '8px' }}>
+            <div
+              style={{
+                maxHeight: "calc(86vh - 80px)",
+                overflowY: "auto",
+                paddingRight: "8px",
+              }}
+            >
               <div className={styles.sectionCard}>
                 <div className={styles.sectionCardTitle}>{templateTitle}</div>
                 <div className={styles.sectionCardText}>{templateSubtitle}</div>
@@ -483,11 +570,17 @@ export default function TemplateEditPage() {
               {sections.length === 0 ? (
                 <div className={styles.sectionCard}>
                   <div className={styles.sectionCardTitle}>No sections</div>
-                  <div className={styles.sectionCardText}>Add sections to build your template.</div>
+                  <div className={styles.sectionCardText}>
+                    Add sections to build your template.
+                  </div>
                 </div>
               ) : (
                 sections.map((s) => (
-                  <div key={s.id} className={styles.sectionCard} style={{ marginBottom: 12 }}>
+                  <div
+                    key={s.id}
+                    className={styles.sectionCard}
+                    style={{ marginBottom: 12 }}
+                  >
                     <div className={styles.sectionCardTitle}>{s.title}</div>
                     {(s.styles || ["paragraph"]).map((style, idx) => (
                       <div key={idx}>
@@ -504,11 +597,17 @@ export default function TemplateEditPage() {
 
       {/* Icon Picker Modal */}
       {isIconPickerOpen && (
-        <div className={styles.iconPickerModal} onClick={() => setIsIconPickerOpen(false)}>
-          <div className={styles.iconPickerContent} onClick={(e) => e.stopPropagation()}>
+        <div
+          className={styles.iconPickerModal}
+          onClick={() => setIsIconPickerOpen(false)}
+        >
+          <div
+            className={styles.iconPickerContent}
+            onClick={(e) => e.stopPropagation()}
+          >
             <div className={styles.iconPickerHeader}>
               <div className={styles.iconPickerTitle}>Choose an Icon</div>
-              <button 
+              <button
                 className={styles.iconPickerClose}
                 onClick={() => setIsIconPickerOpen(false)}
                 type="button"
@@ -516,7 +615,7 @@ export default function TemplateEditPage() {
                 ×
               </button>
             </div>
-            
+
             <div className={styles.iconPickerGrid}>
               {TEMPLATE_ICON_KEYS.map((key) => {
                 const IconComponent = TEMPLATE_ICONS[key];
@@ -546,21 +645,31 @@ export default function TemplateEditPage() {
           <>
             {/* Template header (editable on double-click) */}
             <div className={styles.templateCard}>
-              <div 
-                className={styles.templateIcon} 
-                style={{ 
-                  display: "flex", 
-                  alignItems: "center", 
+              <div
+                className={styles.templateIcon}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
                   justifyContent: "center",
                   flexShrink: 0,
                   width: 44,
-                  height: 44
+                  height: 44,
                 }}
               >
-                <IconComp style={{ width: 24, height: 24, color: "#f38a73" }} />
+                <IconComp
+                  style={{ width: 24, height: 24, color: "var(--bg-white)" }}
+                />
               </div>
 
-              <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: 4, minWidth: 0 }}>
+              <div
+                style={{
+                  flex: 1,
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: 4,
+                  minWidth: 0,
+                }}
+              >
                 {isEditingTitle ? (
                   <input
                     className={styles.fieldInput}
@@ -568,30 +677,34 @@ export default function TemplateEditPage() {
                     onChange={(e) => setEditTitleValue(e.target.value)}
                     onBlur={saveTitleEdit}
                     onKeyDown={(e) => {
-                      if (e.key === 'Enter') saveTitleEdit();
-                      if (e.key === 'Escape') setIsEditingTitle(false);
+                      if (e.key === "Enter") saveTitleEdit();
+                      if (e.key === "Escape") setIsEditingTitle(false);
                     }}
                     autoFocus
                     style={{ width: "100%" }}
                   />
                 ) : (
-                  <div 
+                  <div
                     onDoubleClick={handleTitleDoubleClick}
-                    style={{ 
-                      fontWeight: 600, 
-                      fontSize: '1rem',
-                      cursor: 'text',
-                      padding: '8px',
-                      borderRadius: '8px',
-                      transition: 'background 0.2s'
+                    style={{
+                      fontWeight: 600,
+                      fontSize: "1rem",
+                      cursor: "text",
+                      padding: "8px",
+                      borderRadius: "8px",
+                      transition: "background 0.2s",
                     }}
-                    onMouseEnter={(e) => e.currentTarget.style.background = '#fff9f7'}
-                    onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
+                    onMouseEnter={(e) =>
+                      (e.currentTarget.style.background = "var(--bg-subtle)")
+                    }
+                    onMouseLeave={(e) =>
+                      (e.currentTarget.style.background = "transparent")
+                    }
                   >
                     {templateTitle}
                   </div>
                 )}
-                
+
                 {isEditingSubtitle ? (
                   <input
                     className={styles.fieldInput}
@@ -599,25 +712,29 @@ export default function TemplateEditPage() {
                     onChange={(e) => setEditSubtitleValue(e.target.value)}
                     onBlur={saveSubtitleEdit}
                     onKeyDown={(e) => {
-                      if (e.key === 'Enter') saveSubtitleEdit();
-                      if (e.key === 'Escape') setIsEditingSubtitle(false);
+                      if (e.key === "Enter") saveSubtitleEdit();
+                      if (e.key === "Escape") setIsEditingSubtitle(false);
                     }}
                     autoFocus
                     style={{ width: "100%" }}
                   />
                 ) : (
-                  <div 
+                  <div
                     onDoubleClick={handleSubtitleDoubleClick}
-                    style={{ 
-                      fontSize: '0.85rem',
-                      color: '#8a7f7b',
-                      cursor: 'text',
-                      padding: '8px',
-                      borderRadius: '8px',
-                      transition: 'background 0.2s'
+                    style={{
+                      fontSize: "0.85rem",
+                      color: "var(--text-light)",
+                      cursor: "text",
+                      padding: "8px",
+                      borderRadius: "8px",
+                      transition: "background 0.2s",
                     }}
-                    onMouseEnter={(e) => e.currentTarget.style.background = '#fff9f7'}
-                    onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
+                    onMouseEnter={(e) =>
+                      (e.currentTarget.style.background = "var(--bg-subtle)")
+                    }
+                    onMouseLeave={(e) =>
+                      (e.currentTarget.style.background = "transparent")
+                    }
                   >
                     {templateSubtitle}
                   </div>
@@ -626,14 +743,25 @@ export default function TemplateEditPage() {
             </div>
 
             {/* Icon picker button */}
-            <button 
+            <button
               onClick={() => setIsIconPickerOpen(true)}
               className={styles.secondaryButton}
               type="button"
-              style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 8, justifyContent: 'center' }}
+              style={{
+                width: "100%",
+                display: "flex",
+                alignItems: "center",
+                gap: 8,
+                justifyContent: "center",
+              }}
             >
-              <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
-                <path d="M8 1a7 7 0 100 14A7 7 0 008 1zm0 2a1 1 0 110 2 1 1 0 010-2zm0 3a1 1 0 110 2 1 1 0 010-2zm-3 3a1 1 0 110 2 1 1 0 010-2zm3 0a1 1 0 110 2 1 1 0 010-2zm3 0a1 1 0 110 2 1 1 0 010-2z"/>
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 16 16"
+                fill="currentColor"
+              >
+                <path d="M8 1a7 7 0 100 14A7 7 0 008 1zm0 2a1 1 0 110 2 1 1 0 010-2zm0 3a1 1 0 110 2 1 1 0 010-2zm-3 3a1 1 0 110 2 1 1 0 010-2zm3 0a1 1 0 110 2 1 1 0 010-2zm3 0a1 1 0 110 2 1 1 0 010-2z" />
               </svg>
               Change Icon
             </button>
@@ -641,8 +769,15 @@ export default function TemplateEditPage() {
             <div className={styles.sidebarSectionTitle}>Template Outline</div>
 
             {/* DnD Outline */}
-            <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-              <SortableContext items={sections.map((s) => s.id)} strategy={verticalListSortingStrategy}>
+            <DndContext
+              sensors={sensors}
+              collisionDetection={closestCenter}
+              onDragEnd={handleDragEnd}
+            >
+              <SortableContext
+                items={sections.map((s) => s.id)}
+                strategy={verticalListSortingStrategy}
+              >
                 <div className={styles.outlineList}>
                   {sections.map((section, idx) => (
                     <SortableOutlineItem
@@ -655,10 +790,27 @@ export default function TemplateEditPage() {
                     />
                   ))}
 
-                  <button className={styles.outlineAdd} onClick={addSection} type="button">
+                  <button
+                    className={styles.outlineAdd}
+                    onClick={addSection}
+                    type="button"
+                  >
                     + Add Section
                   </button>
                 </div>
+                <div className={styles.sidebarSectionTitle}>
+                  Document Context Inputs
+                </div>
+            <ContextInputsManager
+              contextInputs={documentContextInputs}
+              allowAdditionalContext={false}
+              showAdditionalToggle={false}
+              showItemIcons={false}
+              showDescriptionInList={false}
+              onUpdate={(inputs) => {
+                setDocumentContextInputs(inputs);
+              }}
+            />
               </SortableContext>
             </DndContext>
           </>
@@ -667,7 +819,6 @@ export default function TemplateEditPage() {
           <div className={styles.editor}>
             <div className={styles.editorHeader}>
               <div className={styles.editorTitle}>
-                <div className={styles.editorIcon} />
                 <div>
                   <div className={styles.editorHeading}>
                     {activeSection ? activeSection.title : "Select a section"}
@@ -683,11 +834,21 @@ export default function TemplateEditPage() {
                 Select Styles (you can choose multiple)
               </div>
               <div className={styles.styleBar}>
-                {(["paragraph", "bulleted", "numbered", "table", "quote"] as SectionStyle[]).map((st) => (
+                {(
+                  [
+                    "paragraph",
+                    "bulleted",
+                    "numbered",
+                    "table",
+                    "quote",
+                  ] as SectionStyle[]
+                ).map((st) => (
                   <button
                     key={st}
                     className={`${styles.styleButton} ${
-                      activeSection?.styles?.includes(st) ? styles.styleButtonActive : ""
+                      activeSection?.styles?.includes(st)
+                        ? styles.styleButtonActive
+                        : ""
                     }`}
                     onClick={() => toggleSectionStyle(st)}
                     type="button"
@@ -702,7 +863,9 @@ export default function TemplateEditPage() {
             {/* Editor area */}
             {activeSection ? (
               <>
-                <div className={styles.inputPrompt}>What should this section contain?</div>
+                <div className={styles.inputPrompt}>
+                  What should this section contain?
+                </div>
 
                 <textarea
                   className={styles.textArea}
@@ -716,7 +879,9 @@ export default function TemplateEditPage() {
                 <div style={{ marginTop: 16 }}>
                   <ContextInputsManager
                     contextInputs={activeSection.contextInputs || []}
-                    allowAdditionalContext={activeSection.allowAdditionalContext ?? true}
+                    allowAdditionalContext={
+                      activeSection.allowAdditionalContext ?? true
+                    }
                     onUpdate={(inputs, allowAdditional) => {
                       const updated = [...sections];
                       updated[activeIndex] = {
@@ -730,17 +895,35 @@ export default function TemplateEditPage() {
                 </div>
               </>
             ) : (
-              <div className={styles.textArea} style={{ color: "#a79a96", fontStyle: "italic" }}>
+              <div
+                className={styles.textArea}
+                style={{ color: "var(--text-light)", fontStyle: "italic" }}
+              >
                 Add a section to start editing.
               </div>
             )}
 
             {/* Action buttons */}
-            <div style={{ display: "flex", justifyContent: "flex-end", gap: 12, marginTop: 8 }}>
-              <Link href="/templates" className={styles.cancelLink} style={{ padding: "10px 18px" }}>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "flex-end",
+                gap: 12,
+                marginTop: 8,
+              }}
+            >
+              <Link
+                href="/templates"
+                className={styles.cancelLink}
+                style={{ padding: "10px 18px" }}
+              >
                 Cancel
               </Link>
-              <button className={styles.primaryButton} onClick={saveTemplate} type="button">
+              <button
+                className={styles.primaryButton}
+                onClick={saveTemplate}
+                type="button"
+              >
                 Save Template
               </button>
             </div>
@@ -749,28 +932,30 @@ export default function TemplateEditPage() {
         preview={
           <>
             {/* Collapsible preview header */}
-            <div 
-              className={styles.previewHeader} 
+            <div
+              className={styles.previewHeader}
               onClick={() => setIsPreviewCollapsed(!isPreviewCollapsed)}
               style={{ cursor: "pointer", userSelect: "none" }}
             >
               <div className={styles.previewTitle}>Section Preview</div>
-              <svg 
-                width="20" 
-                height="20" 
-                viewBox="0 0 20 20" 
-                fill="none" 
-                style={{ 
-                  transform: isPreviewCollapsed ? "rotate(-90deg)" : "rotate(0)", 
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 20 20"
+                fill="none"
+                style={{
+                  transform: isPreviewCollapsed
+                    ? "rotate(-90deg)"
+                    : "rotate(0)",
                   transition: "transform 0.2s ease",
-                  color: "#c4aba2"
+                  color: "var(--text-lighter)",
                 }}
               >
-                <path 
-                  d="M5 7.5L10 12.5L15 7.5" 
-                  stroke="currentColor" 
-                  strokeWidth="2" 
-                  strokeLinecap="round" 
+                <path
+                  d="M5 7.5L10 12.5L15 7.5"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
                   strokeLinejoin="round"
                 />
               </svg>
@@ -778,11 +963,18 @@ export default function TemplateEditPage() {
 
             {!isPreviewCollapsed && (
               <>
-                <div className={styles.previewCard} style={{ maxHeight: '750px', overflowY: 'auto' }}>
+                <div
+                  className={styles.previewCard}
+                  style={{ maxHeight: "750px", overflowY: "auto" }}
+                >
                   <div className={styles.previewCardHeader}>
                     <div>
-                      <div className={styles.previewDocTitle}>{templateTitle}</div>
-                      <div className={styles.previewDocDate}>{new Date().toLocaleDateString()}</div>
+                      <div className={styles.previewDocTitle}>
+                        {templateTitle}
+                      </div>
+                      <div className={styles.previewDocDate}>
+                        {new Date().toLocaleDateString()}
+                      </div>
                     </div>
                     <div className={styles.previewBadge}>Preview</div>
                   </div>
@@ -791,30 +983,42 @@ export default function TemplateEditPage() {
 
                   {activeSection ? (
                     <>
-                      <div className={styles.previewSection}>{activeSection.title}</div>
+                      <div className={styles.previewSection}>
+                        {activeSection.title}
+                      </div>
                       {(activeSection.styles?.length || 0) === 0 ? (
-                        <div style={{ color: "#8a7f7b", fontSize: 14, marginTop: 8, fontStyle: "italic" }}>
+                        <div
+                          style={{
+                            color: "var(--text-light)",
+                            fontSize: 14,
+                            marginTop: 8,
+                            fontStyle: "italic",
+                          }}
+                        >
                           Select a style to preview
                         </div>
                       ) : (
                         activeSection.styles.map((style, idx) => (
                           <div key={idx}>
-                            {applyStylePreview(style, generateLoremIpsum(style))}
+                            {applyStylePreview(
+                              style,
+                              generateLoremIpsum(style),
+                            )}
                           </div>
                         ))
                       )}
                     </>
                   ) : (
-                    <div style={{ color: "#8a7f7b", fontSize: 14 }}>
+                    <div style={{ color: "var(--text-light)", fontSize: 14 }}>
                       Select a section to preview.
                     </div>
                   )}
                 </div>
 
                 {/* Full document preview button */}
-                <button 
-                  className={styles.previewSave} 
-                  onClick={() => setIsFullPreviewOpen(true)} 
+                <button
+                  className={styles.previewSave}
+                  onClick={() => setIsFullPreviewOpen(true)}
                   type="button"
                   style={{ width: "100%" }}
                 >

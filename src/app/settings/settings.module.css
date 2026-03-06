@@ -47,9 +47,9 @@
 }
 
 .resetButton {
-  border: 1px solid #f2c9bf;
+  border: 1px solid var(--border-light);
   background: var(--primary-lighter);
-  color: var(--accent-warning);
+  color: var(--primary-color);
   padding: 0.6rem 1.2rem;
   border-radius: 12px;
   font-family: 'Inter', sans-serif;
@@ -64,11 +64,11 @@
 }
 
 .resetButton:hover {
-  background: var(--accent-warning-bg);
-  border-color: var(--accent-warning);
+  background: var(--bg-hover);
+  border-color: var(--primary-color);
   transform: translateY(-1px);
-  box-shadow: 0 8px 16px rgba(226, 123, 112, 0.2);
-  color: #d65a50;
+  box-shadow: var(--shadow-primary-md);
+  color: var(--secondary-color);
 }
 
 .resetButton:active {
@@ -351,57 +351,6 @@
   to {
     transform: rotate(360deg);
   }
-}
-
-.themeColorGrid {
-  display: flex;
-  gap: 1rem;
-  flex-wrap: wrap;
-}
-
-.themeColorOption {
-  width: 56px;
-  height: 56px;
-  border-radius: 12px;
-  border: 3px solid transparent;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  display: grid;
-  place-items: center;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-}
-
-.themeColorOption:hover {
-  transform: translateY(-4px) scale(1.05);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
-}
-
-.themeColorOption:active {
-  transform: translateY(-2px) scale(1.02);
-}
-
-.themeColorActive {
-  border-color: var(--text-primary);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
-  transform: translateY(-2px);
-}
-
-.themeColorActive:hover {
-  transform: translateY(-4px) scale(1.05);
-}
-
-.themePreview {
-  padding: 1rem 1.8rem 1.5rem;
-  border-top: 1px solid var(--border-light);
-  background: var(--bg-hover);
-}
-
-.previewLabel {
-  font-family: 'Inter', sans-serif;
-  font-size: 0.95rem;
-  font-weight: 600;
-  color: var(--text-secondary);
-  text-align: center;
 }
 
 @media (max-width: 900px) {

@@ -40,6 +40,7 @@ export type ManagedTemplate = {
   icon: string;
   tag: string;
   tint: "peach" | "blue" | "sage";
+  documentContextInputs?: ContextInput[];
   sections: Section[];
 };
 

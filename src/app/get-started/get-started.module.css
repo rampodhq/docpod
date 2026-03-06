@@ -1,13 +1,13 @@
 .container {
-  --gs-bg-1: #f9efe8;
-  --gs-bg-2: #f4ded3;
-  --gs-bg-3: #e7cdc4;
-  --gs-ink: #2f211c;
-  --gs-ink-soft: #5f4b43;
-  --gs-brand: #f38a73;
-  --gs-brand-strong: #d86952;
-  --gs-card: rgba(255, 250, 247, 0.86);
-  --gs-card-border: rgba(255, 255, 255, 0.72);
+  --gs-bg-1: var(--bg-gradient-start);
+  --gs-bg-2: var(--bg-gradient-mid);
+  --gs-bg-3: var(--bg-gradient-end);
+  --gs-ink: var(--text-primary);
+  --gs-ink-soft: var(--text-secondary);
+  --gs-brand: var(--primary-color);
+  --gs-brand-strong: var(--secondary-color);
+  --gs-card: var(--bg-card);
+  --gs-card-border: color-mix(in srgb, var(--border-light) 78%, white 22%);
 
   min-height: 100vh;
   display: flex;
@@ -17,7 +17,11 @@
   isolation: isolate;
   background:
     radial-gradient(120% 90% at 12% 8%, rgba(255, 255, 255, 0.78) 0%, rgba(255, 255, 255, 0) 60%),
-    radial-gradient(90% 78% at 88% 18%, rgba(247, 187, 163, 0.48) 0%, rgba(247, 187, 163, 0) 68%),
+    radial-gradient(
+      90% 78% at 88% 18%,
+      color-mix(in srgb, var(--primary-color) 36%, transparent) 0%,
+      transparent 68%
+    ),
     linear-gradient(122deg, var(--gs-bg-1) 0%, var(--gs-bg-2) 45%, var(--gs-bg-3) 100%);
   padding: 2rem;
   overflow: hidden;
@@ -36,9 +40,9 @@
     linear-gradient(
       128deg,
       rgba(255, 255, 255, 0.5) 12%,
-      rgba(244, 188, 165, 0.22) 30%,
+      color-mix(in srgb, var(--primary-color) 22%, transparent) 30%,
       rgba(255, 255, 255, 0.5) 49%,
-      rgba(229, 177, 155, 0.18) 67%,
+      color-mix(in srgb, var(--secondary-color) 18%, transparent) 67%,
       rgba(255, 255, 255, 0.46) 82%
     );
   filter: blur(36px) saturate(120%);
@@ -53,8 +57,8 @@
       -38deg,
       rgba(255, 255, 255, 0.22) 0,
       rgba(255, 255, 255, 0.22) 28px,
-      rgba(224, 177, 157, 0.12) 28px,
-      rgba(224, 177, 157, 0.12) 56px
+      color-mix(in srgb, var(--primary-color) 16%, transparent) 28px,
+      color-mix(in srgb, var(--primary-color) 16%, transparent) 56px
     );
   filter: blur(18px);
   transform: translateY(7%) scale(1.08);
@@ -82,11 +86,11 @@
   font-size: 3rem;
   font-weight: 700;
   color: var(--gs-ink);
-  text-shadow: 0 8px 24px rgba(255, 255, 255, 0.3);
+  text-shadow: 0 8px 24px color-mix(in srgb, var(--primary-color) 20%, transparent);
 }
 
 .logoAccent {
-  color: var(--gs-brand-strong);
+  color: var(--primary-color);
 }
 
 .title {
@@ -123,7 +127,7 @@
   position: relative;
   overflow: hidden;
   box-shadow:
-    0 28px 36px rgba(117, 71, 55, 0.14),
+    var(--shadow-primary-subtle),
     inset 0 1px 0 rgba(255, 255, 255, 0.42);
 }
 
@@ -134,7 +138,11 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: linear-gradient(130deg, rgba(243, 138, 115, 0.13), rgba(216, 105, 82, 0.12));
+  background: linear-gradient(
+    130deg,
+    color-mix(in srgb, var(--primary-color) 16%, transparent),
+    color-mix(in srgb, var(--secondary-color) 14%, transparent)
+  );
   opacity: 0;
   transition: opacity 0.28s ease;
   z-index: 0;
@@ -146,9 +154,9 @@
 
 .optionCard:hover {
   transform: translateY(-7px);
-  border-color: rgba(216, 105, 82, 0.4);
+  border-color: color-mix(in srgb, var(--primary-color) 40%, transparent);
   box-shadow:
-    0 34px 48px rgba(117, 71, 55, 0.2),
+    var(--shadow-primary-hover),
     inset 0 1px 0 rgba(255, 255, 255, 0.62);
 }
 
@@ -160,11 +168,13 @@
   width: 64px;
   height: 64px;
   border-radius: 12px;
-  background: linear-gradient(136deg, var(--gs-brand), var(--gs-brand-strong));
+  background: var(--primary-color);
   display: flex;
   align-items: center;
   justify-content: center;
   color: white;
+  border: 1px solid color-mix(in srgb, var(--primary-color) 82%, white 18%);
+  box-shadow: var(--shadow-primary-sm);
   position: relative;
   z-index: 1;
 }
