@@ -99,11 +99,11 @@ export const useDocuments = () => {
     return documents.filter((doc) => doc.title.toLowerCase().includes(q) || doc.meta.toLowerCase().includes(q));
   }, [documents, query]);
 
-  const deleteDocument = () => {
+  const deleteDocument = (_id: string) => {
     alert("Delete is not available yet.");
   };
 
-  const duplicateDocument = () => {
+  const duplicateDocument = (_id: string) => {
     alert("Duplicate is not available yet.");
   };
 
