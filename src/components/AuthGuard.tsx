@@ -7,25 +7,30 @@ import { Loader2 } from "lucide-react";
 
 const publicRoutes = ["/login", "/signup", "/get-started"];
 
+const isPublicRoute = (pathname: string): boolean => {
+  const normalized = pathname.replace(/\/+$/, "") || "/";
+  return publicRoutes.some((route) => normalized === route || normalized.endsWith(route));
+};
+
 export const AuthGuard = ({ children }: { children: React.ReactNode }) => {
-  const { isAuthenticated, user } = useAuth();
+  const { isAuthenticated } = useAuth();
   const router = useRouter();
   const pathname = usePathname();
 
   useEffect(() => {
-    const isPublicRoute = publicRoutes.includes(pathname);
+    const isRoutePublic = isPublicRoute(pathname);
 
-    if (!isAuthenticated && !isPublicRoute) {
+    if (!isAuthenticated && !isRoutePublic) {
       router.push("/get-started");
-    } else if (isAuthenticated && isPublicRoute) {
+    } else if (isAuthenticated && isRoutePublic) {
       router.push("/");
     }
   }, [isAuthenticated, pathname, router]);
 
-  const isPublicRoute = publicRoutes.includes(pathname);
+  const isRoutePublic = isPublicRoute(pathname);
 
   // Show loading state while checking auth
-  if (!isAuthenticated && !isPublicRoute) {
+  if (!isAuthenticated && !isRoutePublic) {
     return (
       <div
         style={{

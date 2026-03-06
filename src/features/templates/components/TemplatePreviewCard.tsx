@@ -8,6 +8,7 @@ import {
   TEMPLATE_ICON_KEYS,
   type TemplateIconKey,
 } from "../icons/templateIcons";
+import { paths } from "@/shared/lib/paths";
 
 interface Props {
   template: Template;
@@ -25,7 +26,7 @@ export const TemplatePreviewCard = ({ template }: Props) => {
   return (
     <div
       className={styles.card}
-      onClick={() => router.push(`/create/${template.id}`)}
+      onClick={() => router.push(paths.createTemplate(template.id))}
     >
       <div className={styles.icon}>
         <IconComponent className={styles.iconSvg} />

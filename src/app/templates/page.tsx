@@ -10,6 +10,7 @@ import {
   TEMPLATE_ICON_KEYS,
   type TemplateIconKey,
 } from "@/features/templates/icons/templateIcons";
+import { paths } from "@/shared/lib/paths";
 
 export default function TemplatesPage() {
   const router = useRouter();
@@ -30,7 +31,7 @@ export default function TemplatesPage() {
 
   const handleCreateTemplate = async () => {
     const newId = await createTemplate();
-    router.push(`/templates/${newId}/edit`);
+    router.push(paths.editTemplate(newId));
   };
 
   return (
@@ -91,9 +92,7 @@ export default function TemplatesPage() {
                   key={template.id}
                   className={styles.card}
                   onClick={() =>
-                    router.push(
-                      `/templates/${template.id}/edit`
-                    )
+                    router.push(paths.editTemplate(template.id))
                   }
                 >
                 <div className={styles.cardHeader}>
@@ -136,9 +135,7 @@ export default function TemplatesPage() {
                         <button
                           className={styles.dropdownItem}
                           onClick={() =>
-                            router.push(
-                              `/templates/${template.id}/edit`
-                            )
+                            router.push(paths.editTemplate(template.id))
                           }
                         >
                           Edit

@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useParams, useRouter } from "next/navigation";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState, type ReactElement } from "react";
 
 import { BuilderShell, ContextInputsManager } from "@/features/builder";
@@ -281,7 +281,9 @@ function SortableOutlineItem(props: {
 }
 
 export default function TemplateEditPage() {
-  const { id } = useParams<{ id: string }>();
+  const params = useParams<{ id?: string }>();
+  const searchParams = useSearchParams();
+  const id = params?.id ?? searchParams.get("id") ?? "";
   const router = useRouter();
   const [templateId, setTemplateId] = useState<string>(id ?? "");
   const [templateTitle, setTemplateTitle] = useState("");
@@ -311,7 +313,11 @@ export default function TemplateEditPage() {
   useEffect(() => {
     let ignore = false;
     const run = async () => {
-      if (!id) return;
+      if (!id) {
+        setTemplateId("");
+        setIsLoadingTemplate(false);
+        return;
+      }
       setIsLoadingTemplate(true);
       try {
         const response = await templatesApi.getById(id);

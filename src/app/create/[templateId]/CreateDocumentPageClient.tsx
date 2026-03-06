@@ -1,6 +1,6 @@
 "use client";
 
-import { useParams, useRouter } from "next/navigation";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
@@ -28,9 +28,10 @@ type GenerationLog = {
 type GenerationState = "idle" | "generating" | "completed" | "error";
 
 export default function CreateDocumentPage() {
-  const params = useParams();
+  const params = useParams<{ templateId?: string }>();
+  const searchParams = useSearchParams();
   const router = useRouter();
-  const templateId = params.templateId as string;
+  const templateId = params?.templateId ?? searchParams.get("templateId") ?? "";
   const [template, setTemplate] = useState<ManagedTemplate | null>(null);
   const [isTemplateLoading, setIsTemplateLoading] = useState(true);
 
@@ -52,6 +53,11 @@ export default function CreateDocumentPage() {
     let ignore = false;
 
     const run = async () => {
+      if (!templateId) {
+        setTemplate(null);
+        setIsTemplateLoading(false);
+        return;
+      }
       setIsTemplateLoading(true);
       try {
         const response = await templatesApi.getById(templateId);

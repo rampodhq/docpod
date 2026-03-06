@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { documentsApi } from "@/features/documents/api/documents.api";
@@ -9,9 +9,10 @@ import type { Document, DocumentContent } from "@/features/documents/types/docum
 import styles from "./page.module.css";
 
 export default function DocumentViewPage() {
-  const params = useParams();
+  const params = useParams<{ id?: string }>();
+  const searchParams = useSearchParams();
   const router = useRouter();
-  const id = params.id as string;
+  const id = params?.id ?? searchParams.get("id") ?? "";
 
   const [documentData, setDocumentData] = useState<Document | null>(null);
   const [content, setContent] = useState<DocumentContent | null>(null);
@@ -21,6 +22,11 @@ export default function DocumentViewPage() {
   useEffect(() => {
     let ignore = false;
     const run = async () => {
+      if (!id) {
+        setErrorMessage("Missing document id.");
+        setIsLoading(false);
+        return;
+      }
       setIsLoading(true);
       setErrorMessage(null);
       try {

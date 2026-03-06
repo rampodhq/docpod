@@ -6,6 +6,7 @@ import { Input } from "@/shared/ui";
 import { Search } from "lucide-react";
 import styles from "./documents.module.css";
 import { useDocuments } from "@/features/documents/hooks/useDocuments";
+import { paths } from "@/shared/lib/paths";
 import {
   TEMPLATE_ICONS,
 } from "@/features/templates/icons/templateIcons";
@@ -124,11 +125,11 @@ export default function DocumentsPage() {
                       key={doc.id}
                       role="button"
                       tabIndex={0}
-                      onClick={() => router.push(`/documents/${doc.id}`)}
+                      onClick={() => router.push(paths.documentDetails(doc.id))}
                       onKeyDown={(e) => {
                         if (e.key === "Enter" || e.key === " ") {
                           e.preventDefault();
-                          router.push(`/documents/${doc.id}`);
+                          router.push(paths.documentDetails(doc.id));
                         }
                       }}
                     >

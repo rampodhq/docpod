@@ -17,13 +17,20 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+const authRoutes = ["/login", "/signup", "/get-started"];
+
+const isAuthPath = (pathname: string): boolean => {
+  const normalized = pathname.replace(/\/+$/, "") || "/";
+  return authRoutes.some((route) => normalized === route || normalized.endsWith(route));
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   const pathname = usePathname();
-  const isAuthPage = pathname === "/login" || pathname === "/signup" || pathname === "/get-started";
+  const isAuthPage = isAuthPath(pathname);
 
   return (
     <html lang="en">
