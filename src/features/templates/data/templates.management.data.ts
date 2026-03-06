@@ -3,6 +3,7 @@ export type SectionStyle =
   | "bulleted"
   | "numbered"
   | "table"
+  | "quote"
   | "highlight";
 
 export type ContextInputType = "file" | "url" | "text";
